@@ -1,0 +1,19 @@
+{
+  "buildCommand": "npx prisma generate && npx prisma migrate deploy && next build",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "DIRECT_URL": "@direct-url",
+    "NEXTAUTH_SECRET": "@nextauth-secret",
+    "NEXTAUTH_URL": "@nextauth-url",
+    "ADMIN_EMAIL": "@admin-email",
+    "ADMIN_PASSWORD_HASH": "@admin-password-hash",
+    "CLOUDINARY_CLOUD_NAME": "@cloudinary-cloud-name",
+    "CLOUDINARY_API_KEY": "@cloudinary-api-key",
+    "CLOUDINARY_API_SECRET": "@cloudinary-api-secret",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "@next-public-cloudinary-cloud-name",
+    "RESEND_API_KEY": "@resend-api-key",
+    "NEXT_PUBLIC_SITE_URL": "@next-public-site-url"
+  }
+}

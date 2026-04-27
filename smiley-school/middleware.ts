@@ -1,8 +1,12 @@
-export { auth as middleware } from "@/features/auth/config";
+import NextAuth from "next-auth";
+import { authConfig } from "@/features/auth/auth.config";
+
+export const { auth: middleware } = NextAuth(authConfig);
 
 export const config = {
   matcher: [
-    // Run middleware on admin routes only (not login, not static assets)
-    "/admin/:path*",
+    // Protect /admin and all sub-routes except /admin/login
+    "/admin",
+    "/admin/((?!login).+)",
   ],
 };

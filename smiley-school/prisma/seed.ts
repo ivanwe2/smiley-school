@@ -1,7 +1,9 @@
 import { PrismaClient } from "../src/generated/prisma";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
-const db = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! }); // seed only runs in controlled CLI context
+const db = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Seeding Smiley School database...");

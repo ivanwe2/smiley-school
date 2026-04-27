@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { z } from "zod";
+import { authConfig } from "./auth.config";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -10,15 +11,7 @@ const loginSchema = z.object({
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  pages: {
-    signIn: "/admin/login",
-    error: "/admin/login",
-  },
+  ...authConfig,
   providers: [
     Credentials({
       name: "credentials",
@@ -47,28 +40,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    // Protect all /admin/* routes except /admin/login
-    authorized({ request, auth: session }) {
-      const { pathname } = request.nextUrl;
-      if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
-        return !!session?.user;
-      }
-      return true;
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = (user as { role?: string }).role;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        (session.user as { role?: string }).role = token.role as string;
-      }
-      return session;
-    },
-  },
 });

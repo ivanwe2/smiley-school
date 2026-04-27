@@ -23,9 +23,11 @@ Primary stack: Next.js 16 (App Router) · TypeScript (strict) · Tailwind CSS v4
 - Export `unstable_instant` from routes that should navigate instantly (new in Next.js 16)
 
 ### Prisma v7
-- The generator is `provider = "prisma-client"` (NOT "prisma-client-js")
-- Output is `../src/generated/prisma`
-- Import from `@/generated/prisma` not `@prisma/client`
+- Generator: `provider = "prisma-client-js"` with `output = "../src/generated/prisma"`
+- Import from `@/generated/prisma` — resolves to the generated `index.js`
+- **Prisma v7 removed `datasourceUrl` from the constructor.** The connection URL must be passed via a driver adapter: `new PrismaPg({ connectionString: process.env.DATABASE_URL })`
+- Driver adapter packages: `@prisma/adapter-pg` + `pg` (works for both local Postgres and Neon TCP)
+- See `src/lib/db.ts` for the canonical client setup
 
 ### Component Organization
 - Feature code lives in `src/features/[feature]/`
@@ -42,7 +44,7 @@ Primary stack: Next.js 16 (App Router) · TypeScript (strict) · Tailwind CSS v4
 
 ### Database
 - Always use Prisma client from `src/lib/db.ts`
-- Import from `@/generated/prisma` not `@prisma/client`
+- Import from `@/generated/prisma`
 - Use `db.$transaction()` for atomic operations
 - Never expose raw Prisma types to the client
 

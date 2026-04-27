@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: smiley
+      POSTGRES_PASSWORD: smiley_dev
+      POSTGRES_DB: smiley_school
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smiley -d smiley_school"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://smiley:smiley_dev@db:5432/smiley_school?schema=public
+      DIRECT_URL: postgresql://smiley:smiley_dev@db:5432/smiley_school?schema=public
+      NEXTAUTH_SECRET: dev-secret-change-in-production
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      # Add the rest of your secrets in .env.local
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      # Keep generated Prisma client inside the Docker VM filesystem.
+      # Avoids WSL2 bind-mount write-visibility latency where files written
+      # by `prisma generate` are not immediately seen by the Next.js process.
+      - /app/src/generated
+    env_file:
+      - .env.local
+
+volumes:
+  postgres_data:

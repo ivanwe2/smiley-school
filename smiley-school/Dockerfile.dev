@@ -1,0 +1,20 @@
+FROM node:22-alpine
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY . .
+
+# Generate the Prisma client into the image layer.
+# The docker-compose volume /app/src/generated is initialised from this layer
+# on first run, so the module is available the moment Next.js starts.
+# A dummy DATABASE_URL is enough — prisma generate never connects to the DB.
+RUN DATABASE_URL=postgresql://user:pass@localhost/db npx prisma generate
+
+ENV NEXT_TELEMETRY_DISABLED=1
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npm run dev"]

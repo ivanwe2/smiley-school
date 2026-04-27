@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { PageTransition } from "@/components/shared/PageTransition";
 
 export default function PublicLayout({
   children,
@@ -9,7 +10,9 @@ export default function PublicLayout({
   return (
     <>
       <Header />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        <PageTransition>{children}</PageTransition>
+      </main>
       <Footer />
     </>
   );
