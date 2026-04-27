@@ -1,0 +1,161 @@
+// Smiley School — Prisma Schema
+// Prisma v7: generator provider = "prisma-client", output = "../src/generated/prisma"
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Auth ──────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  SUPER_ADMIN
+}
+
+// ─── Schedule ──────────────────────────────────────────────────────
+
+/// A recurring weekly class (e.g. "Cambridge B2 First — Monday 18:00")
+model Class {
+  id        String          @id @default(cuid())
+  name      String
+  level     String?
+  teacher   String?
+  room      String?
+  color     String?
+  dayOfWeek Int /// 0=Sun 1=Mon … 6=Sat
+  startTime String /// "18:00"
+  endTime   String /// "20:00"
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  overrides ClassOverride[]
+
+  @@map("classes")
+}
+
+/// Per-date overrides: cancellations, reschedules, notes
+model ClassOverride {
+  id                String       @id @default(cuid())
+  classId           String
+  class             Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
+  date              DateTime     @db.Date
+  type              OverrideType
+  overrideStartTime String?
+  overrideEndTime   String?
+  overrideRoom      String?
+  note              String?
+  createdAt         DateTime     @default(now())
+
+  @@unique([classId, date])
+  @@map("class_overrides")
+}
+
+enum OverrideType {
+  CANCELLED
+  RESCHEDULED
+  NOTE_ONLY
+}
+
+// ─── Blog ──────────────────────────────────────────────────────────
+
+model Post {
+  id             String       @id @default(cuid())
+  title          String
+  slug           String       @unique
+  excerpt        String?
+  content        String /// JSON (Tiptap) or plain HTML
+  coverImageUrl  String?
+  coverImageAlt  String?
+  category       PostCategory @default(NEWS)
+  published      Boolean      @default(false)
+  publishedAt    DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  seoTitle       String?
+  seoDescription String?
+
+  @@map("posts")
+}
+
+enum PostCategory {
+  NEWS
+  EVENTS
+  GRADUATIONS
+  ANNOUNCEMENTS
+}
+
+// ─── Gallery ───────────────────────────────────────────────────────
+
+model GalleryAlbum {
+  id            String         @id @default(cuid())
+  name          String
+  description   String?
+  coverImageUrl String?
+  date          DateTime?
+  order         Int            @default(0)
+  published     Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  images        GalleryImage[]
+
+  @@map("gallery_albums")
+}
+
+model GalleryImage {
+  id        String       @id @default(cuid())
+  albumId   String
+  album     GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String
+  caption   String?
+  alt       String?
+  width     Int?
+  height    Int?
+  order     Int          @default(0)
+  createdAt DateTime     @default(now())
+
+  @@map("gallery_images")
+}
+
+// ─── Contact ───────────────────────────────────────────────────────
+
+model ContactSubmission {
+  id          String      @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  subject     String?
+  message     String
+  inquiryType InquiryType @default(GENERAL)
+  read        Boolean     @default(false)
+  repliedAt   DateTime?
+  createdAt   DateTime    @default(now())
+  ipAddress   String?
+
+  @@map("contact_submissions")
+}
+
+enum InquiryType {
+  GENERAL
+  ENROLLMENT
+  SCHEDULE
+  CAMBRIDGE_EXAM
+  PRICING
+}
