@@ -25,6 +25,40 @@ export async function createAlbum(formData: FormData): Promise<ActionResult<{ id
   }
 }
 
+export async function updateAlbum(id: string, formData: FormData): Promise<ActionResult<void>> {
+  await requireAdmin();
+  try {
+    await db.galleryAlbum.update({
+      where: { id },
+      data: {
+        name: String(formData.get("name")),
+        description: String(formData.get("description") || ""),
+        date: formData.get("date") ? new Date(String(formData.get("date"))) : null,
+        published: formData.get("published") === "true",
+      },
+    });
+    revalidatePath("/gallery");
+    revalidatePath("/admin/gallery");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error(e);
+    return { success: false, error: "Failed to update album." };
+  }
+}
+
+export async function deleteAlbum(id: string): Promise<ActionResult<void>> {
+  await requireAdmin();
+  try {
+    await db.galleryAlbum.delete({ where: { id } });
+    revalidatePath("/gallery");
+    revalidatePath("/admin/gallery");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error(e);
+    return { success: false, error: "Failed to delete album." };
+  }
+}
+
 export async function addImageToAlbum(
   albumId: string,
   imageData: { url: string; publicId: string; caption?: string; alt?: string; width?: number; height?: number }
