@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { getAllClasses } from "@/features/schedule/queries/schedule.queries";
 import { DAY_LABELS } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { AddClassButton } from "./AddClassButton";
+import { ClassRowActions } from "./ClassRowActions";
 
 export const metadata: Metadata = { title: "Schedule Manager" };
 
 export default async function AdminSchedulePage() {
   const classes = await getAllClasses();
 
-  // Group by day
   const byDay: Record<number, typeof classes> = {};
   for (const cls of classes) {
     if (!byDay[cls.dayOfWeek]) byDay[cls.dayOfWeek] = [];
@@ -24,10 +24,7 @@ export default async function AdminSchedulePage() {
           </h1>
           <p className="text-[var(--text-muted)] text-sm mt-0.5">{classes.length} active classes</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--navy-deep)] text-white text-sm font-semibold hover:bg-[var(--navy-mid)] transition-colors active:scale-95">
-          <Plus size={16} />
-          Add Class
-        </button>
+        <AddClassButton />
       </div>
 
       {classes.length === 0 ? (
@@ -51,7 +48,6 @@ export default async function AdminSchedulePage() {
                 <div className="divide-y divide-[var(--border)]">
                   {dayCls.map((cls) => (
                     <div key={cls.id} className="px-5 py-4 flex items-center gap-4 flex-wrap">
-                      {/* Color dot */}
                       <div
                         className="w-3 h-3 rounded-full shrink-0"
                         style={{ backgroundColor: cls.color ?? "#0F1F3D" }}
@@ -69,14 +65,7 @@ export default async function AdminSchedulePage() {
                           {cls.room && ` · ${cls.room}`}
                         </p>
                       </div>
-                      <div className="flex gap-2 shrink-0">
-                        <button className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--border)] text-[var(--navy-mid)] hover:bg-[var(--navy-light)] transition-colors">
-                          Edit
-                        </button>
-                        <button className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 transition-colors">
-                          Cancel date
-                        </button>
-                      </div>
+                      <ClassRowActions cls={cls} />
                     </div>
                   ))}
                 </div>
