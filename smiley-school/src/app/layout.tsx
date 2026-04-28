@@ -16,7 +16,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://smileyschool.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     template: "%s | Smiley School",
     default: "Smiley School — Cambridge English Language Center",
@@ -37,6 +40,13 @@ export const metadata: Metadata = {
     title: "Smiley School — Cambridge English Language Center",
     description:
       "Cambridge-certified English exam preparation for all ages. A2, B1, B2, and C1 courses.",
+    images: [{ url: "/images/og-image.jpg", width: 1200, height: 630, alt: "Smiley School" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Smiley School — Cambridge English Language Center",
+    description: "Cambridge-certified English exam preparation for all ages. A2, B1, B2, and C1 courses.",
+    images: ["/images/og-image.jpg"],
   },
 };
 
