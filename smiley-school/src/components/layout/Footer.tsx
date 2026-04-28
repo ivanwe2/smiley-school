@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { NAV_LINKS, SCHOOL } from "@/lib/constants";
+import { Logo } from "@/components/shared/Logo";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 function FacebookIcon({ size = 16 }: { size?: number }) {
@@ -13,7 +14,17 @@ function FacebookIcon({ size = 16 }: { size?: number }) {
 
 function InstagramIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
       <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
@@ -49,13 +60,7 @@ export function Footer() {
 
           {/* Brand column */}
           <div className="lg:col-span-2">
-            <Image
-              src="/images/logo-dark.svg"
-              alt="Smiley School"
-              width={160}
-              height={38}
-              className="h-9 w-auto mb-4"
-            />
+            <Logo variant="dark" className="h-9 w-auto mb-4" />
             <p className="text-sm leading-relaxed text-[var(--navy-light)]/80 max-w-sm">
               A Cambridge-certified English language center dedicated to helping
               students of all ages achieve their language goals since {SCHOOL.founded}.

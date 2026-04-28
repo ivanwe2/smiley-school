@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS } from "@/lib/constants";
+import { Logo } from "@/components/shared/Logo";
 import { MobileMenu } from "./MobileMenu";
 
 export function Header() {
@@ -32,14 +32,7 @@ export function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center gap-2.5 group">
-            <Image
-              src="/images/logo.svg"
-              alt="Smiley School"
-              width={160}
-              height={38}
-              priority
-              className="h-9 w-auto"
-            />
+            <Logo className="h-9 w-auto" />
           </Link>
 
           {/* Desktop nav */}

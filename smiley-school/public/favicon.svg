@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Yellow rounded square background -->
+  <rect width="48" height="48" rx="10" fill="#F4B942"/>
+  <!-- Book shadow -->
+  <rect x="14" y="11" width="22" height="27" rx="3" fill="#0F1F3D" opacity="0.30"/>
+  <!-- Book main -->
+  <rect x="11" y="8" width="22" height="27" rx="3" fill="#0F1F3D"/>
+  <!-- Smiley eyes -->
+  <circle cx="17" cy="18" r="2.2" fill="#F4B942"/>
+  <circle cx="27" cy="18" r="2.2" fill="#F4B942"/>
+  <!-- Smiley mouth -->
+  <path d="M14 26 Q22 33 30 26" stroke="#F4B942" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+</svg>
