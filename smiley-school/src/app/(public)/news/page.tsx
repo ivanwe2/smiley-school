@@ -17,7 +17,7 @@ export default async function NewsPage() {
     <>
       <section className="bg-[var(--navy-deep)] text-white py-14 md:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold mb-3">
+          <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold mb-3 text-white">
             News & <span className="text-[var(--yellow-primary)]">Events</span>
           </h1>
           <p className="text-[var(--navy-light)]/80 text-lg">Graduations, announcements, and school news.</p>

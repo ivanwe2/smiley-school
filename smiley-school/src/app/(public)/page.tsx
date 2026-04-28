@@ -69,7 +69,7 @@ export default async function HomePage() {
       {/* ── Stats bar ─────────────────────────────────────────────── */}
       <section className="bg-[var(--yellow-primary)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
             {[
               { value: `${SCHOOL.studentsCertified}+`, label: "Students Certified" },
               { value: `${SCHOOL.yearsExperience}+`, label: "Years Experience" },

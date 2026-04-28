@@ -19,7 +19,7 @@ export default async function GalleryPage() {
     <>
       <section className="bg-[var(--navy-deep)] text-white py-14 md:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold mb-3">
+          <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold mb-3 text-white">
             <span className="text-[var(--yellow-primary)]">Gallery</span>
           </h1>
           <p className="text-[var(--navy-light)]/80 text-lg">Graduation days, school events, and classroom moments.</p>
