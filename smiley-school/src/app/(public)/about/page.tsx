@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { SCHOOL, CAMBRIDGE_LEVELS } from "@/lib/constants";
 
@@ -25,7 +24,7 @@ export default function AboutPage() {
             <span className="inline-block bg-[var(--yellow-primary)]/10 border border-[var(--yellow-primary)]/30 text-[var(--yellow-primary)] text-xs font-semibold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wider">
               Our Story
             </span>
-            <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-5">
+            <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-5 text-white">
               More than a school —{" "}
               <span className="text-[var(--yellow-primary)]">a community</span>
             </h1>

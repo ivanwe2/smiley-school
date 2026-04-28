@@ -56,7 +56,7 @@ export function Logo({ variant = "light", className = "h-9 w-auto" }: LogoProps)
         School
       </text>
       {/* Yellow accent dot */}
-      <circle cx="107" cy="37" r="3" fill="#F4B942" />
+      <circle cx="100" cy="37" r="3" fill="#F4B942" />
     </svg>
   );
 }

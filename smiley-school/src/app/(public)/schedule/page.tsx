@@ -37,7 +37,7 @@ export default async function SchedulePage({ searchParams }: Props) {
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="bg-[var(--navy-deep)] text-white py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-fraunces text-3xl sm:text-4xl font-semibold mb-2">
+          <h1 className="font-fraunces text-3xl sm:text-4xl font-semibold mb-2 text-white">
             Weekly Schedule
           </h1>
           <p className="text-[var(--navy-light)]/80">

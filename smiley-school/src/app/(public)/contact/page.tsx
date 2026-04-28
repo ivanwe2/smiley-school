@@ -15,7 +15,7 @@ export default function ContactPage() {
       <section className="bg-[var(--navy-deep)] text-white py-14 md:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-4">
+            <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-4 text-white">
               Get in{" "}
               <span className="text-[var(--yellow-primary)]">touch</span>
             </h1>

@@ -60,7 +60,7 @@ export default function CoursesPage() {
             <span className="inline-block bg-[var(--yellow-primary)]/10 border border-[var(--yellow-primary)]/30 text-[var(--yellow-primary)] text-xs font-semibold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wider">
               Cambridge Programmes
             </span>
-            <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-5">
+            <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-5 text-white">
               Find your{" "}
               <span className="text-[var(--yellow-primary)]">level</span>
             </h1>
