@@ -3,14 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS } from "@/lib/constants";
 import { Logo } from "@/components/shared/Logo";
 import { MobileMenu } from "./MobileMenu";
+import { LanguageToggle } from "@/components/shared/LanguageToggle";
 
-export function Header() {
+export function Header({ locale }: { locale: string }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const t = useTranslations("nav");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -53,21 +56,22 @@ export function Header() {
                       : "text-[var(--text-body)] hover:text-[var(--navy-deep)] hover:bg-[var(--navy-light)]"
                   )}
                 >
-                  {link.label}
+                  {t(link.key)}
                 </Link>
               );
             })}
           </nav>
 
-          {/* CTA + mobile trigger */}
-          <div className="flex items-center gap-3">
+          {/* CTA + language toggle + mobile trigger */}
+          <div className="flex items-center gap-2">
+            <LanguageToggle currentLocale={locale} />
             <Link
               href="/contact"
               className="hidden sm:inline-flex items-center px-4 py-2 rounded-lg bg-[var(--yellow-primary)] text-[var(--navy-deep)] text-sm font-semibold hover:bg-[var(--yellow-deep)] transition-colors"
             >
-              Enroll Now
+              {t("enrollNow")}
             </Link>
-            <MobileMenu />
+            <MobileMenu locale={locale} />
           </div>
 
         </div>

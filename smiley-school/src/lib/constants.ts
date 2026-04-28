@@ -20,13 +20,13 @@ export const SCHOOL = {
 
 // ─── Navigation ─────────────────────────────────────────────────────────────
 export const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Courses", href: "/courses" },
-  { label: "Schedule", href: "/schedule" },
-  { label: "News", href: "/news" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
+  { key: "home", href: "/" },
+  { key: "about", href: "/about" },
+  { key: "courses", href: "/courses" },
+  { key: "schedule", href: "/schedule" },
+  { key: "news", href: "/news" },
+  { key: "gallery", href: "/gallery" },
+  { key: "contact", href: "/contact" },
 ] as const;
 
 export const ADMIN_NAV_LINKS = [

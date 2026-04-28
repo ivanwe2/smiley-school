@@ -1,7 +1,9 @@
+import { getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import type { ScheduledClass } from "../types";
 
-export function ClassCard({ cls }: { cls: ScheduledClass }) {
+export async function ClassCard({ cls }: { cls: ScheduledClass }) {
+  const t = await getTranslations("schedule");
   const isCancelled = cls.status === "cancelled";
   const isRescheduled = cls.status === "rescheduled";
   const hasNote = cls.status === "note";
@@ -26,17 +28,17 @@ export function ClassCard({ cls }: { cls: ScheduledClass }) {
         {/* Status badges */}
         {isCancelled && (
           <span className="inline-block bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5">
-            Cancelled
+            {t("cancelled")}
           </span>
         )}
         {isRescheduled && (
           <span className="inline-block bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5">
-            Rescheduled
+            {t("rescheduled")}
           </span>
         )}
         {hasNote && cls.override?.note && (
           <span className="inline-block bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5">
-            Notice
+            {t("notice")}
           </span>
         )}
 

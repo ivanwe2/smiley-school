@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { CAMBRIDGE_LEVELS, SCHOOL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -50,7 +51,9 @@ const FAQ = [
   { q: "What does a Cambridge certificate mean for my career?", a: "Cambridge certificates are recognised by thousands of universities, employers, and governments worldwide. B2 First and C1 Advanced are especially valued for university admission and professional contexts." },
 ];
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const t = await getTranslations("courses");
+
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -58,15 +61,14 @@ export default function CoursesPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <span className="inline-block bg-[var(--yellow-primary)]/10 border border-[var(--yellow-primary)]/30 text-[var(--yellow-primary)] text-xs font-semibold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wider">
-              Cambridge Programmes
+              {t("hero.badge")}
             </span>
             <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-5 text-white">
-              Find your{" "}
-              <span className="text-[var(--yellow-primary)]">level</span>
+              {t("hero.heading")}{" "}
+              <span className="text-[var(--yellow-primary)]">{t("hero.headingAccent")}</span>
             </h1>
             <p className="text-[var(--navy-light)]/80 text-lg leading-relaxed">
-              From first words to fluent academic English — we prepare students for every
-              Cambridge level with a {SCHOOL.passRate}% exam pass rate.
+              {t("hero.description", { passRate: SCHOOL.passRate })}
             </p>
           </div>
         </div>
@@ -99,7 +101,9 @@ export default function CoursesPage() {
                 {/* Card body */}
                 <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="md:col-span-1">
-                    <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-2">Who it's for</h3>
+                    <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                      {t("overview.whoFor")}
+                    </h3>
                     <p className="text-sm text-[var(--text-body)] leading-relaxed">{detail.who}</p>
                     <div className="mt-4 space-y-1.5">
                       <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
@@ -107,12 +111,14 @@ export default function CoursesPage() {
                       </div>
                       <div className="flex items-start gap-2 text-xs text-[var(--text-muted)]">
                         <span className="text-[var(--yellow-deep)] mt-px">📋</span>
-                        <span>Papers: {detail.exam}</span>
+                        <span>{t("overview.exam")} {detail.exam}</span>
                       </div>
                     </div>
                   </div>
                   <div className="md:col-span-2">
-                    <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">What you'll master</h3>
+                    <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">
+                      {t("overview.skills")}
+                    </h3>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {detail.skills.map((skill) => (
                         <li key={skill} className="flex items-start gap-2 text-sm text-[var(--text-body)]">
@@ -131,7 +137,7 @@ export default function CoursesPage() {
                     className="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors active:scale-95"
                     style={{ backgroundColor: level.color, color: "white" }}
                   >
-                    Enquire about {level.code} →
+                    {t("enquireAbout", { code: level.code })}
                   </Link>
                 </div>
               </div>
@@ -144,7 +150,7 @@ export default function CoursesPage() {
       <section className="py-16 bg-[var(--navy-light)]">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h2 className="font-fraunces text-3xl font-semibold text-[var(--navy-deep)] text-center mb-10">
-            Frequently asked questions
+            {t("faq.heading")}
           </h2>
           <div className="space-y-4">
             {FAQ.map((item, i) => (
@@ -169,16 +175,16 @@ export default function CoursesPage() {
       <section className="py-14 bg-[var(--navy-deep)]">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
           <h2 className="font-fraunces text-3xl font-semibold text-white mb-4">
-            Not sure which level?
+            {t("cta.heading")}
           </h2>
           <p className="text-[var(--navy-light)]/80 mb-7">
-            Book a free placement assessment and we'll find the perfect starting point for you.
+            {t("cta.description")}
           </p>
           <Link
             href="/contact"
             className="inline-flex items-center px-6 py-3 rounded-xl bg-[var(--yellow-primary)] text-[var(--navy-deep)] font-semibold text-sm hover:bg-[var(--yellow-deep)] transition-colors active:scale-95"
           >
-            Book Free Placement Assessment
+            {t("cta.button")}
           </Link>
         </div>
       </section>

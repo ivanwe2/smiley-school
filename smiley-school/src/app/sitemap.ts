@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const [posts, albums] = await Promise.all([
       db.post.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-      db.galleryAlbum.findMany({ where: { published: true }, select: { id: true, updatedAt: true } }),
+      db.galleryAlbum.findMany({ where: { published: true }, select: { id: true, createdAt: true } }),
     ]);
 
     const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const albumRoutes: MetadataRoute.Sitemap = albums.map((album) => ({
       url: `${BASE}/gallery/${album.id}`,
-      lastModified: album.updatedAt,
+      lastModified: album.createdAt,
       changeFrequency: "monthly",
       priority: 0.5,
     }));

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 type GalleryImage = {
   id: string;
@@ -12,11 +13,13 @@ type GalleryImage = {
 };
 
 export function ProtectedImageGrid({ images, albumName }: { images: GalleryImage[]; albumName: string }) {
+  const t = useTranslations("gallery");
+
   if (images.length === 0) {
     return (
       <div className="text-center py-16">
         <p className="text-3xl mb-3">📷</p>
-        <p className="text-[var(--text-muted)]">No photos in this album yet.</p>
+        <p className="text-[var(--text-muted)]">{t("albumEmpty")}</p>
       </div>
     );
   }
@@ -50,7 +53,7 @@ export function ProtectedImageGrid({ images, albumName }: { images: GalleryImage
         ))}
       </div>
       <p className="text-center text-xs text-[var(--text-muted)] mt-8 opacity-70">
-        © Smiley School — Photos may not be reproduced without permission.
+        {t("copyright")}
       </p>
     </div>
   );

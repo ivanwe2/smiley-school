@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { submitContactForm } from "@/features/contact/actions/contact.actions";
-import { INQUIRY_TYPE_LABELS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 type State = { success: boolean; error?: string; id?: string } | null;
+
+const INQUIRY_KEYS = ["GENERAL", "ENROLLMENT", "SCHEDULE", "CAMBRIDGE_EXAM", "PRICING"] as const;
 
 function ContactField({
   label, name, required, error, children,
@@ -26,6 +28,7 @@ function ContactField({
 const inputClass = "w-full px-3.5 py-3 rounded-xl border border-[var(--border)] bg-white text-[var(--text-body)] text-sm outline-none focus:ring-2 focus:ring-[var(--yellow-primary)] focus:border-[var(--yellow-primary)] transition-colors placeholder:text-[var(--text-muted)]";
 
 export function ContactForm() {
+  const t = useTranslations("contact.form");
   const [state, action, pending] = useActionState<State, FormData>(
     async (_prev: State, formData: FormData) => {
       const result = await submitContactForm(formData);
@@ -39,10 +42,8 @@ export function ContactForm() {
     return (
       <div className="bg-[var(--success)]/10 border border-[var(--success)]/30 rounded-2xl p-8 text-center">
         <div className="text-4xl mb-3">🎉</div>
-        <h3 className="font-fraunces text-xl font-semibold text-[var(--navy-deep)] mb-2">Message sent!</h3>
-        <p className="text-[var(--text-muted)] text-sm">
-          Thank you for reaching out. We'll get back to you within 1 business day.
-        </p>
+        <h3 className="font-fraunces text-xl font-semibold text-[var(--navy-deep)] mb-2">{t("successHeading")}</h3>
+        <p className="text-[var(--text-muted)] text-sm">{t("successDesc")}</p>
       </div>
     );
   }
@@ -56,32 +57,32 @@ export function ContactForm() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <ContactField label="Your name" name="name" required>
+        <ContactField label={t("name")} name="name" required>
           <input id="name" name="name" type="text" required placeholder="Maria Papadaki" className={inputClass} />
         </ContactField>
-        <ContactField label="Email address" name="email" required>
+        <ContactField label={t("email")} name="email" required>
           <input id="email" name="email" type="email" required placeholder="maria@example.com" className={inputClass} />
         </ContactField>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <ContactField label="Phone number" name="phone">
+        <ContactField label={t("phone")} name="phone">
           <input id="phone" name="phone" type="tel" placeholder="+30 210 000 0000" className={inputClass} />
         </ContactField>
-        <ContactField label="Type of enquiry" name="inquiryType" required>
+        <ContactField label={t("inquiryType")} name="inquiryType" required>
           <select id="inquiryType" name="inquiryType" className={inputClass}>
-            {Object.entries(INQUIRY_TYPE_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
+            {INQUIRY_KEYS.map((key) => (
+              <option key={key} value={key}>{t(`inquiryTypes.${key}`)}</option>
             ))}
           </select>
         </ContactField>
       </div>
 
-      <ContactField label="Subject" name="subject">
+      <ContactField label={t("subject")} name="subject">
         <input id="subject" name="subject" type="text" placeholder="e.g. B2 First class availability" className={inputClass} />
       </ContactField>
 
-      <ContactField label="Message" name="message" required>
+      <ContactField label={t("message")} name="message" required>
         <textarea
           id="message"
           name="message"
@@ -101,7 +102,7 @@ export function ContactForm() {
           "disabled:opacity-60 disabled:cursor-not-allowed"
         )}
       >
-        {pending ? "Sending…" : "Send Message"}
+        {pending ? t("sending") : t("submit")}
       </button>
     </form>
   );

@@ -1,3 +1,4 @@
+import { getLocale } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/shared/PageTransition";
@@ -29,18 +30,20 @@ const jsonLd = {
   },
 };
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Header />
+      <Header locale={locale} />
       <main className="flex-1">
         <PageTransition>{children}</PageTransition>
       </main>

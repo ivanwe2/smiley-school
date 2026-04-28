@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { getPublishedAlbums } from "@/features/gallery/queries/gallery.queries";
 import { formatDate } from "@/lib/utils";
 import { SCHOOL } from "@/lib/constants";
@@ -14,15 +15,16 @@ export const revalidate = 3600;
 
 export default async function GalleryPage() {
   const albums = await getPublishedAlbums();
+  const t = await getTranslations("gallery");
 
   return (
     <>
       <section className="bg-[var(--navy-deep)] text-white py-14 md:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold mb-3 text-white">
-            <span className="text-[var(--yellow-primary)]">Gallery</span>
+            <span className="text-[var(--yellow-primary)]">{t("hero.heading")}</span>
           </h1>
-          <p className="text-[var(--navy-light)]/80 text-lg">Graduation days, school events, and classroom moments.</p>
+          <p className="text-[var(--navy-light)]/80 text-lg">{t("hero.description")}</p>
         </div>
       </section>
 
@@ -31,8 +33,8 @@ export default async function GalleryPage() {
           {albums.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-4xl mb-3">🖼️</p>
-              <h2 className="font-fraunces text-xl font-semibold text-[var(--navy-deep)] mb-2">No albums yet</h2>
-              <p className="text-[var(--text-muted)] text-sm">Photos coming soon!</p>
+              <h2 className="font-fraunces text-xl font-semibold text-[var(--navy-deep)] mb-2">{t("empty.heading")}</h2>
+              <p className="text-[var(--text-muted)] text-sm">{t("empty.description")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

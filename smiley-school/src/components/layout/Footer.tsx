@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { NAV_LINKS, SCHOOL } from "@/lib/constants";
 import { Logo } from "@/components/shared/Logo";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
@@ -32,8 +33,10 @@ function InstagramIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-export function Footer() {
+export async function Footer() {
   const year = new Date().getFullYear();
+  const tNav = await getTranslations("nav");
+  const tFooter = await getTranslations("footer");
 
   return (
     <footer className="bg-[var(--navy-deep)] text-[var(--navy-light)]">
@@ -48,8 +51,7 @@ export function Footer() {
             className="flex-shrink-0"
           />
           <p className="text-sm text-[var(--navy-light)]/80 text-center sm:text-left">
-            Smiley School is an authorised Cambridge English preparation centre —
-            our results speak for themselves.
+            {tFooter("cambridgeStrip")}
           </p>
         </div>
       </div>
@@ -62,8 +64,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Logo variant="dark" className="h-9 w-auto mb-4" />
             <p className="text-sm leading-relaxed text-[var(--navy-light)]/80 max-w-sm">
-              A Cambridge-certified English language center dedicated to helping
-              students of all ages achieve their language goals since {SCHOOL.founded}.
+              {tFooter("tagline")}
             </p>
             <div className="flex gap-3 mt-5">
               <a
@@ -90,7 +91,7 @@ export function Footer() {
           {/* Navigation */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
-              Navigation
+              {tFooter("navigationHeading")}
             </h3>
             <ul className="space-y-2.5">
               {NAV_LINKS.map((link) => (
@@ -99,7 +100,7 @@ export function Footer() {
                     href={link.href}
                     className="text-sm text-[var(--navy-light)]/80 hover:text-[var(--yellow-primary)] transition-colors"
                   >
-                    {link.label}
+                    {tNav(link.key)}
                   </Link>
                 </li>
               ))}
@@ -109,7 +110,7 @@ export function Footer() {
           {/* Contact info */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
-              Contact
+              {tFooter("contactHeading")}
             </h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5">
@@ -147,8 +148,8 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-[var(--navy-mid)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[var(--navy-light)]/60">
-          <p>© {year} {SCHOOL.name}. All rights reserved.</p>
-          <p>Authorised Cambridge English Preparation Centre</p>
+          <p>© {year} {SCHOOL.name}. {tFooter("copyright")}</p>
+          <p>{tFooter("cambridgeCertified")}</p>
         </div>
       </div>
     </footer>

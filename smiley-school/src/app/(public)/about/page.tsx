@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { SCHOOL, CAMBRIDGE_LEVELS } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -14,7 +15,10 @@ const TEAM = [
   { name: "Maria Kostaki", role: "Young Learners Specialist", bio: "Expert in kids' English with a CELTA and a background in child psychology. Kids love her classes.", initials: "MK" },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const t = await getTranslations("about");
+  const tHome = await getTranslations("home");
+
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -22,15 +26,14 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <span className="inline-block bg-[var(--yellow-primary)]/10 border border-[var(--yellow-primary)]/30 text-[var(--yellow-primary)] text-xs font-semibold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wider">
-              Our Story
+              {t("hero.badge")}
             </span>
             <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-5 text-white">
-              More than a school —{" "}
-              <span className="text-[var(--yellow-primary)]">a community</span>
+              {t("hero.heading")}{" "}
+              <span className="text-[var(--yellow-primary)]">{t("hero.headingAccent")}</span>
             </h1>
             <p className="text-[var(--navy-light)]/80 text-lg leading-relaxed">
-              Since {SCHOOL.founded}, Smiley School has been helping students of all ages
-              discover the joy of English — and the confidence that comes with it.
+              {t("hero.description", { founded: SCHOOL.founded })}
             </p>
           </div>
         </div>
@@ -42,25 +45,12 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="font-fraunces text-3xl sm:text-4xl font-semibold text-[var(--navy-deep)] mb-5">
-                How it all began
+                {t("story.heading")}
               </h2>
               <div className="space-y-4 text-[var(--text-body)] leading-relaxed">
-                <p>
-                  Smiley School was founded in {SCHOOL.founded} with a simple belief: every student
-                  deserves a teacher who genuinely cares about their progress. Our founder,
-                  herself a Cambridge-certified educator, wanted to create a place where
-                  academic rigour and personal warmth could coexist.
-                </p>
-                <p>
-                  What started as a small after-school programme has grown into a full
-                  Cambridge authorised preparation centre, serving children, teenagers, and
-                  adults at every level — from complete beginners to C1 Advanced candidates.
-                </p>
-                <p>
-                  Over {SCHOOL.yearsExperience} years and {SCHOOL.studentsCertified}+ certified students
-                  later, the mission is the same: help every student walk out of the exam room
-                  feeling prepared, confident, and proud.
-                </p>
+                <p>{t("story.p1")}</p>
+                <p>{t("story.p2")}</p>
+                <p>{t("story.p3", { studentsCertified: SCHOOL.studentsCertified, passRate: SCHOOL.passRate })}</p>
               </div>
             </div>
 
@@ -92,13 +82,10 @@ export default function AboutPage() {
             </div>
             <div>
               <h2 className="font-fraunces text-2xl font-semibold text-[var(--navy-deep)] mb-2">
-                Cambridge Authorised Preparation Centre
+                {t("cambridge.heading")}
               </h2>
               <p className="text-[var(--text-body)] leading-relaxed max-w-2xl">
-                Smiley School is officially recognised by Cambridge Assessment English as
-                an authorised exam preparation centre. This means our teaching materials,
-                methodology, and results are held to the highest Cambridge standards. When
-                you study with us, you're studying the real thing.
+                {t("cambridge.description")}
               </p>
               <div className="flex flex-wrap gap-2 mt-4">
                 {CAMBRIDGE_LEVELS.map((l) => (
@@ -121,11 +108,10 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="font-fraunces text-3xl sm:text-4xl font-semibold text-[var(--navy-deep)] mb-3">
-              Meet the team
+              {t("team.heading")}
             </h2>
             <p className="text-[var(--text-muted)] max-w-xl mx-auto">
-              Our teachers are Cambridge-qualified, experienced, and genuinely passionate
-              about English language education.
+              {t("team.subheading")}
             </p>
           </div>
 
@@ -152,16 +138,16 @@ export default function AboutPage() {
       <section className="py-14 bg-[var(--navy-deep)]">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
           <h2 className="font-fraunces text-3xl font-semibold text-white mb-4">
-            Come visit us
+            {tHome("cta.heading")}
           </h2>
           <p className="text-[var(--navy-light)]/80 mb-7">
-            We offer a free placement assessment — come in, meet the team, and find the right class for you.
+            {tHome("cta.subheading")}
           </p>
           <Link
             href="/contact"
             className="inline-flex items-center px-6 py-3 rounded-xl bg-[var(--yellow-primary)] text-[var(--navy-deep)] font-semibold text-sm hover:bg-[var(--yellow-deep)] transition-colors active:scale-95"
           >
-            Book a Free Assessment
+            {tHome("cta.book")}
           </Link>
         </div>
       </section>

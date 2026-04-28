@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { getAlbumWithImages } from "@/features/gallery/queries/gallery.queries";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
@@ -22,6 +23,8 @@ export default async function AlbumPage({ params }: Props) {
   const album = await getAlbumWithImages(albumId);
   if (!album) notFound();
 
+  const t = await getTranslations("gallery");
+
   const images = (album as typeof album & {
     images: { id: string; url: string; alt: string | null; caption: string | null; width: number | null; height: number | null }[];
   }).images;
@@ -35,7 +38,7 @@ export default async function AlbumPage({ params }: Props) {
             className="inline-flex items-center gap-1.5 text-sm text-[var(--navy-light)]/70 hover:text-white transition-colors mb-4"
           >
             <ArrowLeft size={15} />
-            All albums
+            {t("allAlbums")}
           </Link>
           <h1 className="font-fraunces text-3xl sm:text-4xl font-semibold mb-2 text-white">{album.name}</h1>
           {album.description && <p className="text-[var(--navy-light)]/80">{album.description}</p>}

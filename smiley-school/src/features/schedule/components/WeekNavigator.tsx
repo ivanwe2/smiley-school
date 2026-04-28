@@ -1,12 +1,13 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { addDays, format, startOfWeek, isThisWeek } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { addDays, format, isThisWeek } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export function WeekNavigator({ weekStart }: { weekStart: Date }) {
   const router = useRouter();
+  const t = useTranslations("schedule");
   const weekEnd = addDays(weekStart, 6);
   const isCurrentWeek = isThisWeek(weekStart, { weekStartsOn: 1 });
 
@@ -20,7 +21,7 @@ export function WeekNavigator({ weekStart }: { weekStart: Date }) {
     <div className="flex items-center gap-2 sm:gap-4">
       <button
         onClick={() => navigate(-1)}
-        aria-label="Previous week"
+        aria-label={t("prevWeek")}
         className="p-2.5 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--navy-light)] transition-colors active:scale-95"
       >
         <ChevronLeft size={18} />
@@ -31,7 +32,7 @@ export function WeekNavigator({ weekStart }: { weekStart: Date }) {
           {format(weekStart, "MMM d")} – {format(weekEnd, "MMM d, yyyy")}
         </p>
         {isCurrentWeek && (
-          <span className="text-xs text-[var(--yellow-deep)] font-semibold">This week</span>
+          <span className="text-xs text-[var(--yellow-deep)] font-semibold">{t("currentWeek")}</span>
         )}
       </div>
 
@@ -41,12 +42,12 @@ export function WeekNavigator({ weekStart }: { weekStart: Date }) {
             onClick={() => router.push("/schedule")}
             className="hidden sm:block px-3 py-2 text-xs font-semibold rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--navy-light)] transition-colors"
           >
-            Today
+            {t("today")}
           </button>
         )}
         <button
           onClick={() => navigate(1)}
-          aria-label="Next week"
+          aria-label={t("nextWeek")}
           className="p-2.5 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--navy-light)] transition-colors active:scale-95"
         >
           <ChevronRight size={18} />

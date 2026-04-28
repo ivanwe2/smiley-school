@@ -3,18 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS } from "@/lib/constants";
+import { LanguageToggle } from "@/components/shared/LanguageToggle";
 
-export function MobileMenu() {
+export function MobileMenu({ locale }: { locale: string }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
-  // Close on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
-  // Lock body scroll when open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -52,15 +53,18 @@ export function MobileMenu() {
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 h-16 border-b border-[var(--border)]">
           <span className="font-fraunces font-semibold text-[var(--navy-deep)]">
-            Menu
+            {t("menu")}
           </span>
-          <button
-            onClick={() => setOpen(false)}
-            className="p-2 rounded-lg text-[var(--navy-deep)] hover:bg-[var(--navy-light)] transition-colors"
-            aria-label="Close menu"
-          >
-            <X size={20} />
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageToggle currentLocale={locale} />
+            <button
+              onClick={() => setOpen(false)}
+              className="p-2 rounded-lg text-[var(--navy-deep)] hover:bg-[var(--navy-light)] transition-colors"
+              aria-label="Close menu"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         {/* Nav links */}
@@ -81,7 +85,7 @@ export function MobileMenu() {
                     : "text-[var(--text-body)] hover:bg-[var(--navy-light)] hover:text-[var(--navy-deep)]"
                 )}
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             );
           })}
@@ -93,7 +97,7 @@ export function MobileMenu() {
             href="/contact"
             className="block w-full text-center py-3 rounded-xl bg-[var(--yellow-primary)] text-[var(--navy-deep)] font-semibold text-sm hover:bg-[var(--yellow-deep)] transition-colors"
           >
-            Enroll Now
+            {t("enrollNow")}
           </Link>
         </div>
       </nav>

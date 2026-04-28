@@ -1,0 +1,240 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "courses": "Courses",
+    "schedule": "Schedule",
+    "news": "News",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "enrollNow": "Enroll Now",
+    "menu": "Menu"
+  },
+  "footer": {
+    "tagline": "A Cambridge-certified English language center dedicated to helping students of all ages achieve their language goals.",
+    "cambridgeStrip": "Smiley School is an authorised Cambridge English preparation centre — our results speak for themselves.",
+    "navigationHeading": "Navigation",
+    "contactHeading": "Contact",
+    "copyright": "All rights reserved.",
+    "cambridgeCertified": "Authorised Cambridge English Preparation Centre"
+  },
+  "home": {
+    "hero": {
+      "badge": "Cambridge Authorised Centre",
+      "heading": "English that opens",
+      "headingAccent": "every door",
+      "description": "We prepare students of all ages for Cambridge A2, B1, B2, and C1 exams — with a {passRate}% pass rate and {yearsExperience}+ years of experience.",
+      "viewSchedule": "View Schedule",
+      "bookAssessment": "Book Free Assessment"
+    },
+    "stats": {
+      "studentsCertified": "Students Certified",
+      "yearsExperience": "Years Experience",
+      "passRate": "Exam Pass Rate"
+    },
+    "levels": {
+      "heading": "Find your level",
+      "subheading": "From first steps to advanced certification — we have a class for every goal.",
+      "learnMore": "Learn more →",
+      "viewCourses": "All courses"
+    },
+    "whySmiley": {
+      "heading": "Why choose Smiley School?",
+      "subheading": "Not just exam prep — we build confidence for life.",
+      "reasons": {
+        "cambridge": {
+          "title": "Cambridge Certified",
+          "desc": "An officially recognised Cambridge English preparation and exam centre with a documented track record."
+        },
+        "teachers": {
+          "title": "Qualified Teachers",
+          "desc": "Every teacher holds a Cambridge CELTA or DELTA qualification and specialises in exam preparation."
+        },
+        "results": {
+          "title": "Proven Results",
+          "desc": "97% exam pass rate for students who complete the full preparation course."
+        },
+        "community": {
+          "title": "Friendly Community",
+          "desc": "Small classes, personal attention, and a learning environment where every student feels supported."
+        },
+        "flexible": {
+          "title": "Flexible Schedule",
+          "desc": "Morning, afternoon, and evening classes for children, teenagers, and adults."
+        },
+        "proven": {
+          "title": "Trusted by Families",
+          "desc": "Over 1,200 students certified since we opened our doors."
+        }
+      }
+    },
+    "latestNews": {
+      "heading": "Latest news",
+      "subheading": "Graduations, announcements, and school news.",
+      "viewAll": "View all →"
+    },
+    "testimonials": {
+      "heading": "What our students say",
+      "subheading": "Don't just take our word for it — here's what our students share."
+    },
+    "cta": {
+      "heading": "Ready to start your English journey?",
+      "subheading": "Contact us for a free placement assessment and find the class that's right for you.",
+      "book": "Book Free Assessment",
+      "viewSchedule": "See the Schedule"
+    },
+    "noPosts": "Check back soon for school news and updates."
+  },
+  "about": {
+    "hero": {
+      "badge": "Our Story",
+      "heading": "More than a school —",
+      "headingAccent": "a community",
+      "description": "Since {founded}, Smiley School has been helping students of all ages discover the joy of English — and the confidence that comes with it."
+    },
+    "story": {
+      "heading": "How it all began",
+      "p1": "Smiley School was founded with a simple belief: every student deserves a teacher who genuinely cares about their progress. Our founder, herself a Cambridge-certified educator, wanted to create a place where academic rigour and personal warmth could coexist.",
+      "p2": "What started as a small after-school programme has grown into a full Cambridge authorised preparation centre, serving children, teenagers, and adults at every level — from complete beginners to C1 Advanced candidates.",
+      "p3": "Today we're proud of {studentsCertified}+ certified students and a {passRate}% pass rate — but what matters most is the personal approach that makes all the difference."
+    },
+    "team": {
+      "heading": "Meet the team",
+      "subheading": "Our teachers are Cambridge-qualified, experienced, and passionate about English."
+    },
+    "values": {
+      "heading": "Our values",
+      "subheading": "The principles that guide everything we do.",
+      "items": {
+        "excellence": { "title": "Academic Excellence", "desc": "Our Cambridge partnership ensures we teach to the highest standards." },
+        "warmth": { "title": "Human Warmth", "desc": "Small classes, names remembered from day 1 — we value people, not just results." },
+        "results": { "title": "Results You Can Count On", "desc": "97% exam pass rate. We're not satisfied until you are." }
+      }
+    },
+    "cambridge": {
+      "heading": "Cambridge Authorised Preparation Centre",
+      "description": "Smiley School is officially recognised by Cambridge Assessment English as an authorised exam preparation centre. This means our teaching materials, methodology, and results are held to the highest Cambridge standards. When you study with us, you're studying the real thing."
+    }
+  },
+  "courses": {
+    "hero": {
+      "badge": "Cambridge Programmes",
+      "heading": "Find your",
+      "headingAccent": "level",
+      "description": "From first words to fluent academic English — we prepare students for every Cambridge level with a {passRate}% exam pass rate."
+    },
+    "overview": {
+      "heading": "Full Cambridge Path",
+      "subheading": "Whatever your level or goal, we have the right course.",
+      "preparation": "Preparation:",
+      "exam": "Papers:",
+      "whoFor": "Who it's for",
+      "skills": "What you'll master"
+    },
+    "enquireAbout": "Enquire about {code} →",
+    "faq": {
+      "heading": "Frequently asked questions",
+      "subheading": "Everything you need to know before enrolling."
+    },
+    "cta": {
+      "heading": "Not sure which level is right for you?",
+      "description": "Book a free placement assessment. We'll help you find the right exam and create a personalised study plan.",
+      "button": "Book Free Placement Assessment"
+    }
+  },
+  "schedule": {
+    "hero": {
+      "heading": "Weekly Schedule",
+      "description": "All current classes — updated in real time. Cancellations and changes are shown automatically."
+    },
+    "noClasses": "No classes this week.",
+    "noClassesDay": "No classes scheduled",
+    "cancelled": "Cancelled",
+    "rescheduled": "Rescheduled",
+    "notice": "Notice",
+    "prevWeek": "Previous week",
+    "nextWeek": "Next week",
+    "currentWeek": "This week",
+    "today": "Today",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    }
+  },
+  "news": {
+    "hero": {
+      "heading": "News &",
+      "headingAccent": "Events",
+      "description": "Graduations, announcements, and school news."
+    },
+    "empty": {
+      "heading": "No posts yet",
+      "description": "Check back soon for school news and updates."
+    },
+    "categories": {
+      "NEWS": "News",
+      "EVENTS": "Events",
+      "GRADUATIONS": "Graduations",
+      "ANNOUNCEMENTS": "Announcements"
+    },
+    "backToNews": "Back to News",
+    "share": "Share:",
+    "relatedPosts": "More from the blog",
+    "publishedOn": "Published on"
+  },
+  "gallery": {
+    "hero": {
+      "heading": "Gallery",
+      "description": "Graduation days, school events, and classroom moments."
+    },
+    "empty": {
+      "heading": "No albums yet",
+      "description": "Photos coming soon!"
+    },
+    "albumEmpty": "No photos in this album yet.",
+    "allAlbums": "All albums",
+    "copyright": "© Smiley School — Photos may not be reproduced without permission."
+  },
+  "contact": {
+    "hero": {
+      "heading": "Get in",
+      "headingAccent": "touch",
+      "description": "Have a question? Want to book a free placement assessment? We'd love to hear from you."
+    },
+    "findUs": "Find us",
+    "labels": {
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Hours"
+    },
+    "form": {
+      "heading": "Send us a message",
+      "name": "Your name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "subject": "Subject",
+      "message": "Message",
+      "inquiryType": "Type of enquiry",
+      "submit": "Send Message",
+      "sending": "Sending…",
+      "successHeading": "Message sent!",
+      "successDesc": "Thank you for reaching out. We'll get back to you within 1 business day.",
+      "errorPrefix": "Something went wrong:",
+      "inquiryTypes": {
+        "GENERAL": "General Inquiry",
+        "ENROLLMENT": "Enrollment",
+        "SCHEDULE": "Schedule Question",
+        "CAMBRIDGE_EXAM": "Cambridge Exam Info",
+        "PRICING": "Pricing & Fees"
+      }
+    },
+    "map": {
+      "heading": "How to find us"
+    }
+  }
+}

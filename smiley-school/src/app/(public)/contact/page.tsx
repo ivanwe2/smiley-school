@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import type React from "react";
+import { getTranslations } from "next-intl/server";
 import { SCHOOL } from "@/lib/constants";
 import { ContactForm } from "@/features/contact/components/ContactForm";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
@@ -8,7 +10,16 @@ export const metadata: Metadata = {
   description: `Get in touch with ${SCHOOL.name}. Book a free placement assessment or ask about our Cambridge English programmes.`,
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const t = await getTranslations("contact");
+
+  const contactItems: { Icon: React.ComponentType<{ size?: number; className?: string }>; key: "address" | "phone" | "email" | "hours"; value: string; href?: string }[] = [
+    { Icon: MapPin, key: "address", value: SCHOOL.address },
+    { Icon: Phone, key: "phone", value: SCHOOL.phone, href: `tel:${SCHOOL.phone.replace(/\s/g, "")}` },
+    { Icon: Mail, key: "email", value: SCHOOL.email, href: `mailto:${SCHOOL.email}` },
+    { Icon: Clock, key: "hours", value: SCHOOL.hours },
+  ];
+
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -16,11 +27,11 @@ export default function ContactPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <h1 className="font-fraunces text-4xl sm:text-5xl font-semibold leading-tight mb-4 text-white">
-              Get in{" "}
-              <span className="text-[var(--yellow-primary)]">touch</span>
+              {t("hero.heading")}{" "}
+              <span className="text-[var(--yellow-primary)]">{t("hero.headingAccent")}</span>
             </h1>
             <p className="text-[var(--navy-light)]/80 text-lg">
-              Have a question? Want to book a free placement assessment? We'd love to hear from you.
+              {t("hero.description")}
             </p>
           </div>
         </div>
@@ -35,21 +46,18 @@ export default function ContactPage() {
             <div className="lg:col-span-2 space-y-8">
               <div>
                 <h2 className="font-fraunces text-2xl font-semibold text-[var(--navy-deep)] mb-5">
-                  Find us
+                  {t("findUs")}
                 </h2>
                 <ul className="space-y-4">
-                  {[
-                    { Icon: MapPin, label: "Address", value: SCHOOL.address },
-                    { Icon: Phone, label: "Phone", value: SCHOOL.phone, href: `tel:${SCHOOL.phone.replace(/\s/g, "")}` },
-                    { Icon: Mail, label: "Email", value: SCHOOL.email, href: `mailto:${SCHOOL.email}` },
-                    { Icon: Clock, label: "Hours", value: SCHOOL.hours },
-                  ].map(({ Icon, label, value, href }) => (
-                    <li key={label} className="flex items-start gap-3.5">
+                  {contactItems.map(({ Icon, key, value, href }) => (
+                    <li key={key} className="flex items-start gap-3.5">
                       <div className="w-9 h-9 rounded-lg bg-[var(--yellow-light)] flex items-center justify-center shrink-0 mt-0.5">
                         <Icon size={16} className="text-[var(--yellow-deep)]" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-0.5">{label}</p>
+                        <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-0.5">
+                          {t(`labels.${key}`)}
+                        </p>
                         {href ? (
                           <a href={href} className="text-sm text-[var(--text-body)] hover:text-[var(--navy-deep)] transition-colors">
                             {value}
@@ -85,7 +93,7 @@ export default function ContactPage() {
             {/* Form */}
             <div className="lg:col-span-3">
               <h2 className="font-fraunces text-2xl font-semibold text-[var(--navy-deep)] mb-6">
-                Send us a message
+                {t("form.heading")}
               </h2>
               <ContactForm />
             </div>

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { getPostBySlug, getPublishedPosts } from "@/features/blog/queries/posts.queries";
 import { formatDate } from "@/lib/utils";
-import { POST_CATEGORY_LABELS } from "@/lib/constants";
 import { ArrowLeft } from "lucide-react";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -31,8 +31,17 @@ export default async function PostPage({ params }: Props) {
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
+  const t = await getTranslations("news");
   const recentPosts = await getPublishedPosts(3);
   const related = recentPosts.filter((p) => p.slug !== slug).slice(0, 2);
+
+  const CATEGORY_KEYS: Record<string, string> = {
+    NEWS: t("categories.NEWS"),
+    EVENTS: t("categories.EVENTS"),
+    GRADUATIONS: t("categories.GRADUATIONS"),
+    ANNOUNCEMENTS: t("categories.ANNOUNCEMENTS"),
+  };
+  const categoryLabel = CATEGORY_KEYS[post.category] ?? post.category;
 
   return (
     <>
@@ -50,13 +59,13 @@ export default async function PostPage({ params }: Props) {
           {/* Back link */}
           <Link href="/news" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--navy-deep)] transition-colors mb-6">
             <ArrowLeft size={15} />
-            Back to News
+            {t("backToNews")}
           </Link>
 
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="text-xs font-bold uppercase tracking-wider bg-[var(--yellow-light)] text-[var(--yellow-deep)] px-2.5 py-1 rounded-full">
-              {POST_CATEGORY_LABELS[post.category]}
+              {categoryLabel}
             </span>
             {post.publishedAt && (
               <span className="text-sm text-[var(--text-muted)]">
@@ -77,7 +86,7 @@ export default async function PostPage({ params }: Props) {
 
           {/* Share */}
           <div className="mt-10 pt-8 border-t border-[var(--border)] flex items-center gap-3 flex-wrap">
-            <span className="text-sm font-semibold text-[var(--navy-deep)]">Share:</span>
+            <span className="text-sm font-semibold text-[var(--navy-deep)]">{t("share")}</span>
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${process.env.NEXT_PUBLIC_SITE_URL}/news/${post.slug}`)}`}
               target="_blank"
@@ -92,7 +101,7 @@ export default async function PostPage({ params }: Props) {
         {/* Related posts */}
         {related.length > 0 && (
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 mt-14">
-            <h2 className="font-fraunces text-xl font-semibold text-[var(--navy-deep)] mb-5">More from the blog</h2>
+            <h2 className="font-fraunces text-xl font-semibold text-[var(--navy-deep)] mb-5">{t("relatedPosts")}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {related.map((p) => (
                 <Link key={p.id} href={`/news/${p.slug}`} className="group block bg-[var(--navy-light)] rounded-xl p-4 hover:bg-[var(--yellow-light)] transition-colors">
