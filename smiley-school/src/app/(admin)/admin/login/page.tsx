@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
@@ -38,7 +38,6 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--navy-deep)]">
       <div className="w-full max-w-md">
-        {/* Logo area */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="w-10 h-10 rounded-xl bg-[var(--yellow-primary)] flex items-center justify-center">
@@ -51,8 +50,7 @@ export default function AdminLoginPage() {
           <p className="text-[var(--navy-light)] text-sm">Admin Portal</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl p-8 shadow-2xl">
+        <div className="bg-[var(--card)] rounded-2xl p-8 shadow-2xl">
           <h1 className="text-2xl font-fraunces font-semibold text-[var(--navy-deep)] mb-6">
             Sign in
           </h1>
@@ -72,7 +70,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-white text-[var(--text-body)] text-sm outline-none focus:ring-2 focus:ring-[var(--yellow-primary)] focus:border-[var(--yellow-primary)] transition-colors"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-body)] text-sm outline-none focus:ring-2 focus:ring-[var(--yellow-primary)] focus:border-[var(--yellow-primary)] transition-colors"
                 placeholder="admin@smileyschool.com"
               />
             </div>
@@ -91,13 +89,13 @@ export default function AdminLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-white text-[var(--text-body)] text-sm outline-none focus:ring-2 focus:ring-[var(--yellow-primary)] focus:border-[var(--yellow-primary)] transition-colors"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-body)] text-sm outline-none focus:ring-2 focus:ring-[var(--yellow-primary)] focus:border-[var(--yellow-primary)] transition-colors"
                 placeholder="••••••••"
               />
             </div>
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+              <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-lg">
                 {error}
               </p>
             )}
@@ -118,5 +116,21 @@ export default function AdminLoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoginFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[var(--navy-deep)]">
+      <div className="w-10 h-10 rounded-xl bg-[var(--yellow-primary)] animate-pulse" />
+    </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginForm />
+    </Suspense>
   );
 }
