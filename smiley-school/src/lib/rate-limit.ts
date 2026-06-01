@@ -13,7 +13,8 @@ class RateLimiter {
     private windowMs: number,
     private cleanupIntervalMs: number = 60_000
   ) {
-    setInterval(() => this.cleanup(), cleanupIntervalMs);
+    const timer = setInterval(() => this.cleanup(), cleanupIntervalMs);
+    if (typeof timer.unref === "function") timer.unref();
   }
 
   test(key: string): { success: boolean; remaining: number; resetAt: number } {

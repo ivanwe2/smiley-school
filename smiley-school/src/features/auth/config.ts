@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { z } from "zod";
-import { loginRateLimiter } from "@/lib/rate-limit";
+import { loginRateLimiter, getIpFromRequest } from "@/lib/rate-limit";
 import { authConfig } from "./auth.config";
 
 const loginSchema = z.object({
@@ -29,12 +29,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const { email, password } = parsed.data;
 
-        // Rate limit check (keyed by email to prevent distributed brute force)
-        const rateLimitKey = `login:${email.toLowerCase()}`;
-        const { success: withinLimit } = loginRateLimiter.test(rateLimitKey);
+        const ip = await getIpFromRequest();
+        const ipLimited = loginRateLimiter.test(`ip:${ip}`);
+        const emailLimited = loginRateLimiter.test(`email:${email.toLowerCase()}`);
 
-        if (!withinLimit) {
-          // Return null to deny login (appears as invalid credentials to the user)
+        if (!ipLimited.success || !emailLimited.success) {
           return null;
         }
 
