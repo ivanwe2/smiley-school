@@ -8,7 +8,6 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS } from "@/lib/constants";
 import { LanguageToggle } from "@/components/shared/LanguageToggle";
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 export function MobileMenu({ locale }: { locale: string }) {
   const [open, setOpen] = useState(false);
@@ -57,7 +56,6 @@ export function MobileMenu({ locale }: { locale: string }) {
             {t("menu")}
           </span>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <LanguageToggle currentLocale={locale} />
             <button
               onClick={() => setOpen(false)}

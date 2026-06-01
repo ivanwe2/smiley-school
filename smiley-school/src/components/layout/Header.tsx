@@ -9,7 +9,6 @@ import { NAV_LINKS } from "@/lib/constants";
 import { Logo } from "@/components/shared/Logo";
 import { MobileMenu } from "./MobileMenu";
 import { LanguageToggle } from "@/components/shared/LanguageToggle";
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 export function Header({ locale }: { locale: string }) {
   const pathname = usePathname();
@@ -63,9 +62,8 @@ export function Header({ locale }: { locale: string }) {
             })}
           </nav>
 
-          {/* CTA + theme toggle + language toggle + mobile trigger */}
+          {/* CTA + language toggle + mobile trigger */}
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <LanguageToggle currentLocale={locale} />
             <Link
               href="/contact"
