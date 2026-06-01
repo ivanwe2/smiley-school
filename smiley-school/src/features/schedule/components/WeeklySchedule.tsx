@@ -23,6 +23,13 @@ export function WeeklySchedule({
   todayIndex: number;
 }) {
   const t = useTranslations("schedule");
+
+  // Translations for ClassCard (must be passed as props since it's a client component)
+  const cardT = {
+    cancelled: t("cancelled"),
+    rescheduled: t("rescheduled"),
+    notice: t("notice"),
+  };
   const defaultDay = DAY_KEYS.find((d) => d.index === todayIndex) ? todayIndex : 1;
   const [activeDay, setActiveDay] = useState(defaultDay);
 
@@ -75,7 +82,7 @@ export function WeeklySchedule({
           ) : (
             <div className="space-y-3">
               {activeDayClasses.map((cls) => (
-                <ClassCard key={cls.id} cls={cls} />
+                <ClassCard key={cls.id} cls={cls} t={cardT} />
               ))}
             </div>
           )}
@@ -110,7 +117,7 @@ export function WeeklySchedule({
               ) : (
                 <div className="space-y-2.5">
                   {classes.map((cls) => (
-                    <ClassCard key={cls.id} cls={cls} />
+                    <ClassCard key={cls.id} cls={cls} t={cardT} />
                   ))}
                 </div>
               )}
