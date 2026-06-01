@@ -20,6 +20,22 @@ export async function requireAdmin(): Promise<void> {
 }
 
 /**
+ * Server-side helper: asserts the current request is from a SUPER_ADMIN user.
+ * Throws a redirect to /admin/login if not authenticated or not a super admin.
+ * Use for actions that only super admins should perform (user management, system config).
+ */
+export async function requireSuperAdmin(): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/admin/login");
+  }
+  const role = (session.user as { role?: string }).role;
+  if (role !== "SUPER_ADMIN") {
+    redirect("/admin/login");
+  }
+}
+
+/**
  * Server-side helper: returns the session if authenticated, or null.
  * Use in layouts/pages to conditionally show admin UI.
  */

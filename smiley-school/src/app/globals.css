@@ -113,6 +113,58 @@
   --success: #059669;
 }
 
+/* ── Dark Theme Token Overrides ─────────────────────────────────── */
+.dark {
+  /* ── shadcn base system (dark) ── */
+  --background: #0B1120;
+  --foreground: #E2E8F0;
+  --card: #131C31;
+  --card-foreground: #E2E8F0;
+  --popover: #131C31;
+  --popover-foreground: #E2E8F0;
+  --primary: #F4B942;
+  --primary-foreground: #0F1F3D;
+  --secondary: #1E3A5F;
+  --secondary-foreground: #E8EFF7;
+  --muted: #1C2A44;
+  --muted-foreground: #94A3B8;
+  --accent: #1C2A44;
+  --accent-foreground: #FDE68A;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #1E3A5F;
+  --input: #1E3A5F;
+  --ring: #F4B942;
+
+  /* ── Charts (dark — lighter variants for contrast) ── */
+  --chart-1: #FCD34D;
+  --chart-2: #94A3B8;
+  --chart-3: #CBD5E1;
+  --chart-4: #34D399;
+  --chart-5: #FBBF24;
+
+  /* ── Sidebar (dark) ── */
+  --sidebar: #0B1120;
+  --sidebar-foreground: #E2E8F0;
+  --sidebar-primary: #FCD34D;
+  --sidebar-primary-foreground: #0F1F3D;
+  --sidebar-accent: #1E3A5F;
+  --sidebar-accent-foreground: #E2E8F0;
+  --sidebar-border: #1E3A5F;
+  --sidebar-ring: #F4B942;
+
+  /* ── Brand Palette (dark) ── */
+  --yellow-primary: #FCD34D;
+  --yellow-light: #92400E33;
+  --yellow-deep: #FDE68A;
+  --navy-deep: #F1F5F9;
+  --navy-mid: #CBD5E1;
+  --navy-light: #1C2A44;
+  --white: #131C31;
+  --text-body: #CBD5E1;
+  --text-muted: #94A3B8;
+  --success: #34D399;
+}
+
 /* ── Typography Base ─────────────────────────────────────────────── */
 @layer base {
   * {
@@ -122,6 +174,10 @@
   html {
     @apply font-sans;
     color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {

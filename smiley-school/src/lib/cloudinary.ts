@@ -26,6 +26,9 @@ export function getCloudinaryUrl(
   publicId: string,
   options: CloudinaryOptions = {}
 ): string {
+  // Sanitize publicId to prevent path traversal
+  const sanitizedId = publicId.replace(/\.+/g, "").replace(/\/+/g, "/").replace(/^\/|\/$/g, "");
+
   const {
     width,
     height,
@@ -46,7 +49,7 @@ export function getCloudinaryUrl(
 
   const transforms = parts.join(",");
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/${publicId}`;
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/${sanitizedId}`;
 }
 
 /**

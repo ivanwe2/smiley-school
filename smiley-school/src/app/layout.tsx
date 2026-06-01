@@ -52,6 +52,19 @@ export const metadata: Metadata = {
   },
 };
 
+const themeFlashScript = `
+(function() {
+  try {
+    var theme = localStorage.getItem('smiley-school-theme');
+    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  } catch (e) {}
+})();
+`;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -64,7 +77,11 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${fraunces.variable} ${plusJakartaSans.variable} h-full`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeFlashScript }} />
+      </head>
       <body className="min-h-full flex flex-col antialiased bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
           {children}

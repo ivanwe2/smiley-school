@@ -9,6 +9,7 @@ import { NAV_LINKS } from "@/lib/constants";
 import { Logo } from "@/components/shared/Logo";
 import { MobileMenu } from "./MobileMenu";
 import { LanguageToggle } from "@/components/shared/LanguageToggle";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 export function Header({ locale }: { locale: string }) {
   const pathname = usePathname();
@@ -26,8 +27,8 @@ export function Header({ locale }: { locale: string }) {
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-200",
         scrolled
-          ? "bg-white/95 backdrop-blur-sm shadow-sm border-b border-[var(--border)]"
-          : "bg-white border-b border-[var(--border)]"
+          ? "bg-background/95 backdrop-blur-sm shadow-sm border-b border-[var(--border)]"
+          : "bg-background border-b border-[var(--border)]"
       )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -62,8 +63,9 @@ export function Header({ locale }: { locale: string }) {
             })}
           </nav>
 
-          {/* CTA + language toggle + mobile trigger */}
+          {/* CTA + theme toggle + language toggle + mobile trigger */}
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <LanguageToggle currentLocale={locale} />
             <Link
               href="/contact"

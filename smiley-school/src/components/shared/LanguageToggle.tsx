@@ -25,7 +25,7 @@ export function LanguageToggle({ currentLocale }: { currentLocale: string }) {
         className={cn(
           "px-2.5 py-1 rounded-md text-xs font-semibold transition-all",
           currentLocale === "bg"
-            ? "bg-white text-[var(--navy-deep)] shadow-sm"
+            ? "bg-background text-[var(--navy-deep)] shadow-sm"
             : "text-[var(--text-muted)] hover:text-[var(--navy-deep)]"
         )}
       >
@@ -37,7 +37,7 @@ export function LanguageToggle({ currentLocale }: { currentLocale: string }) {
         className={cn(
           "px-2.5 py-1 rounded-md text-xs font-semibold transition-all",
           currentLocale === "en"
-            ? "bg-white text-[var(--navy-deep)] shadow-sm"
+            ? "bg-background text-[var(--navy-deep)] shadow-sm"
             : "text-[var(--text-muted)] hover:text-[var(--navy-deep)]"
         )}
       >

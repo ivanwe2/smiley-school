@@ -3,11 +3,15 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { z } from "zod";
+import { loginRateLimiter } from "@/lib/rate-limit";
 import { authConfig } from "./auth.config";
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[\d\W_]/, "Password must contain at least one number or special character"),
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -24,6 +28,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
+
+        // Rate limit check (keyed by email to prevent distributed brute force)
+        const rateLimitKey = `login:${email.toLowerCase()}`;
+        const { success: withinLimit } = loginRateLimiter.test(rateLimitKey);
+
+        if (!withinLimit) {
+          // Return null to deny login (appears as invalid credentials to the user)
+          return null;
+        }
 
         const user = await db.user.findUnique({ where: { email } });
         if (!user) return null;
