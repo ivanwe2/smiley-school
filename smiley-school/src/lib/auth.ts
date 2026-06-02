@@ -3,13 +3,15 @@ import { redirect } from "next/navigation";
 
 export type AuthUser = { id: string; email: string; role: string };
 
+const ADMIN_ROLES = ["ADMIN", "SUPER_ADMIN"] as const;
+
 export async function requireAdmin(): Promise<AuthUser> {
   const session = await auth();
-  if (!session?.user) {
+  const user = session?.user as AuthUser | undefined;
+  if (!user || !ADMIN_ROLES.includes(user.role as (typeof ADMIN_ROLES)[number])) {
     redirect("/admin/login");
   }
-  const user = session.user as AuthUser;
-  return { id: user.id, email: user.email, role: user.role ?? "ADMIN" };
+  return { id: user.id, email: user.email, role: user.role };
 }
 
 export async function requireSuperAdmin(): Promise<AuthUser> {
