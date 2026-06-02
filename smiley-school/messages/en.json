@@ -226,7 +226,7 @@
       "successHeading": "Message sent!",
       "successDesc": "Thank you for reaching out. We'll get back to you within 1 business day.",
       "errorPrefix": "Something went wrong:",
-      "privacyText": "By submitting this form you agree to our",
+      "privacyText": "By submitting this form you acknowledge our",
       "privacyLink": "Privacy Policy",
       "inquiryTypes": {
         "GENERAL": "General Inquiry",
