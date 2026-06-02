@@ -1,9 +1,19 @@
-import { getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 import type { ScheduledClass } from "../types";
 
-export async function ClassCard({ cls }: { cls: ScheduledClass }) {
-  const t = await getTranslations("schedule");
+type ClassCardTranslations = {
+  cancelled: string;
+  rescheduled: string;
+  notice: string;
+};
+
+export function ClassCard({
+  cls,
+  t,
+}: {
+  cls: ScheduledClass;
+  t: ClassCardTranslations;
+}) {
   const isCancelled = cls.status === "cancelled";
   const isRescheduled = cls.status === "rescheduled";
   const hasNote = cls.status === "note";
@@ -28,25 +38,27 @@ export async function ClassCard({ cls }: { cls: ScheduledClass }) {
         {/* Status badges */}
         {isCancelled && (
           <span className="inline-block bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5">
-            {t("cancelled")}
+            {t.cancelled}
           </span>
         )}
         {isRescheduled && (
           <span className="inline-block bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5">
-            {t("rescheduled")}
+            {t.rescheduled}
           </span>
         )}
         {hasNote && cls.override?.note && (
           <span className="inline-block bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5">
-            {t("notice")}
+            {t.notice}
           </span>
         )}
 
         {/* Class name */}
-        <h3 className={cn(
-          "font-semibold text-sm text-[var(--navy-deep)] leading-snug",
-          isCancelled && "line-through text-[var(--text-muted)]"
-        )}>
+        <h3
+          className={cn(
+            "font-semibold text-sm text-[var(--navy-deep)] leading-snug",
+            isCancelled && "line-through text-[var(--text-muted)]"
+          )}
+        >
           {cls.name}
         </h3>
 

@@ -26,6 +26,12 @@ export function getCloudinaryUrl(
   publicId: string,
   options: CloudinaryOptions = {}
 ): string {
+  // Sanitize publicId to prevent path traversal
+  const sanitizedId = publicId
+    .replace(/\.\./g, "")
+    .replace(/\/+/g, "/")
+    .replace(/^\/+|\/+$/g, "");
+
   const {
     width,
     height,
@@ -46,17 +52,32 @@ export function getCloudinaryUrl(
 
   const transforms = parts.join(",");
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/${publicId}`;
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/${sanitizedId}`;
 }
 
 /**
  * Generates a signed upload signature for client-side direct uploads.
  */
+const ALLOWED_FORMATS = ["jpg", "jpeg", "png", "webp", "gif"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 export function generateUploadSignature(
   folder: string,
   timestamp: number
-): { signature: string; apiKey: string; cloudName: string } {
-  const paramsToSign = { folder, timestamp };
+): {
+  signature: string;
+  apiKey: string;
+  cloudName: string;
+  allowedFormats: string[];
+  maxFileSize: number;
+} {
+  const paramsToSign = {
+    folder,
+    timestamp,
+    allowed_formats: ALLOWED_FORMATS.join(","),
+    max_file_size: String(MAX_FILE_SIZE),
+  };
+
   const signature = cloudinary.utils.api_sign_request(
     paramsToSign,
     process.env.CLOUDINARY_API_SECRET!
@@ -66,5 +87,7 @@ export function generateUploadSignature(
     signature,
     apiKey: process.env.CLOUDINARY_API_KEY!,
     cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+    allowedFormats: ALLOWED_FORMATS,
+    maxFileSize: MAX_FILE_SIZE,
   };
 }

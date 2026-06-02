@@ -84,3 +84,36 @@ npx prisma migrate dev
 npx prisma db seed
 npx tsc --noEmit
 ```
+
+## Confirmed Security Implementations (do not re-implement)
+
+These were audited and confirmed present in the codebase — do not add duplicate implementations:
+
+| Concern | Implementation | Location |
+|---------|---------------|----------|
+| Stored XSS in blog posts | `sanitizeHtml(post.content)` applied | `news/[slug]/page.tsx:85` |
+| HTML injection in emails | `escapeHtml()` / `escapeHtmlWithBreaks()` on all user fields | `src/lib/email.ts`, `contact.actions.ts` |
+| CSRF | Native Next.js Server Action Origin-header enforcement | No extra code needed |
+| SQL injection | Prisma ORM, zero raw SQL | All queries |
+| Login brute-force | `loginRateLimiter` (5 attempts / 15 min per IP+email) | `src/lib/rate-limit.ts` |
+| Contact form spam | `contactRateLimiter` (10 / hr per IP) | `src/lib/rate-limit.ts` |
+| Security headers | CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy | `next.config.ts:8–46` |
+| Admin route protection | `middleware.ts` matcher + `requireAdmin()` in all Server Actions | Throughout |
+| Password hashing | bcrypt rounds=12; constant-time compare (DUMMY_HASH sentinel) | `src/features/auth/config.ts` |
+| Seed hardening | Requires `SEED_ADMIN_PASSWORD` env var; fails loudly without it | `prisma/seed.ts` |
+
+## Legal / Privacy
+
+- **Privacy policy page:** `/privacy` — static, bilingual (BG default, EN fallback), GDPR Art. 13 compliant for Bulgarian law (КЗЛД supervisory authority).
+- **Cookie notice:** `src/components/shared/CookieNotice.tsx` — informational banner, dismisses via `localStorage`. All cookies are strictly necessary; no opt-in required.
+- **Contact form:** Shows inline privacy notice linking to `/privacy` below the submit button.
+- **Footer:** Links to `/privacy` in the bottom copyright bar.
+
+## Architecture Notes
+
+- **CSP `frame-src 'none'`** is intentional. Contact page uses a link to Google Maps, not an iframe. Do not add `<iframe>` without updating the CSP in `next.config.ts`.
+- **Rate limiter is in-memory** — designed for a single Docker instance (`output: standalone`). Do NOT switch to Upstash/Redis without explicit instruction.
+- **Admin user** is seeded as `admin@smileyschool.com`. Requires `SEED_ADMIN_PASSWORD` env var at seed time.
+- **Blog post editor** is a plain HTML `<textarea>` by design — no Tiptap yet.
+- **Team members and testimonials** on public pages are hardcoded placeholder data in the component files, not DB-driven.
+- **`params` and `searchParams` in page components are Promises** — always `await` them (Next.js 15+ requirement).

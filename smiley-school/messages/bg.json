@@ -16,7 +16,8 @@
     "navigationHeading": "Навигация",
     "contactHeading": "Контакти",
     "copyright": "Всички права запазени.",
-    "cambridgeCertified": "Оторизиран Подготвителен Център за Cambridge English"
+    "cambridgeCertified": "Оторизиран Подготвителен Център за Cambridge English",
+    "privacyPolicy": "Политика за поверителност"
   },
   "home": {
     "hero": {
@@ -225,6 +226,8 @@
       "successHeading": "Съобщението е изпратено!",
       "successDesc": "Ще се свържем с вас в рамките на 1 работен ден.",
       "errorPrefix": "Нещо се обърка:",
+      "privacyText": "С изпращането на формуляра потвърждавате нашата",
+      "privacyLink": "Политика за поверителност",
       "inquiryTypes": {
         "GENERAL": "Общо запитване",
         "ENROLLMENT": "Записване",
@@ -236,5 +239,14 @@
     "map": {
       "heading": "Как да ни намерите"
     }
+  },
+  "cookieNotice": {
+    "text": "Сайтът използва само необходими бисквитки за сесия и езикови предпочитания.",
+    "learnMore": "Научете повече",
+    "dismiss": "ОК"
+  },
+  "privacy": {
+    "title": "Политика за поверителност",
+    "description": "Как събираме, използваме и защитаваме вашите лични данни."
   }
 }

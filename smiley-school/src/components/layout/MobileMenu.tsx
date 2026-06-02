@@ -44,7 +44,7 @@ export function MobileMenu({ locale }: { locale: string }) {
       {/* Drawer */}
       <nav
         className={cn(
-          "fixed top-0 right-0 z-50 h-full w-72 bg-white shadow-2xl",
+          "fixed top-0 right-0 z-50 h-full w-72 bg-background shadow-2xl",
           "flex flex-col transition-transform duration-300 ease-out",
           open ? "translate-x-0" : "translate-x-full"
         )}

@@ -1,28 +1,33 @@
 import { auth } from "@/features/auth/config";
 import { redirect } from "next/navigation";
 
-/**
- * Server-side helper: asserts the current request is from an authenticated admin.
- * Throws a redirect to /admin/login if not authenticated.
- * Use at the top of every Server Action and admin Server Component.
- *
- * @example
- * export async function deletePost(id: string) {
- *   await requireAdmin();
- *   // ... safe to proceed
- * }
- */
-export async function requireAdmin(): Promise<void> {
+export type AuthUser = { id: string; email: string; role: string };
+
+const ADMIN_ROLES = ["ADMIN", "SUPER_ADMIN"] as const;
+
+export async function requireAdmin(): Promise<AuthUser> {
   const session = await auth();
-  if (!session?.user) {
+  const user = session?.user as AuthUser | undefined;
+  if (!user || !ADMIN_ROLES.includes(user.role as (typeof ADMIN_ROLES)[number])) {
     redirect("/admin/login");
   }
+  return { id: user.id, email: user.email, role: user.role };
 }
 
-/**
- * Server-side helper: returns the session if authenticated, or null.
- * Use in layouts/pages to conditionally show admin UI.
- */
+export async function requireSuperAdmin(): Promise<AuthUser> {
+  const session = await auth();
+  const user = session?.user as AuthUser | undefined;
+  if (!user || user.role !== "SUPER_ADMIN") {
+    redirect("/admin/login");
+  }
+  return { id: user.id, email: user.email, role: user.role };
+}
+
+export async function getUserRole(): Promise<string | null> {
+  const session = await auth();
+  return (session?.user as AuthUser | undefined)?.role ?? null;
+}
+
 export async function getAdminSession() {
   return auth();
 }
