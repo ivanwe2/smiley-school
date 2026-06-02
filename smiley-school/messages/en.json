@@ -16,7 +16,8 @@
     "navigationHeading": "Navigation",
     "contactHeading": "Contact",
     "copyright": "All rights reserved.",
-    "cambridgeCertified": "Authorised Cambridge English Preparation Centre"
+    "cambridgeCertified": "Authorised Cambridge English Preparation Centre",
+    "privacyPolicy": "Privacy Policy"
   },
   "home": {
     "hero": {
@@ -225,6 +226,8 @@
       "successHeading": "Message sent!",
       "successDesc": "Thank you for reaching out. We'll get back to you within 1 business day.",
       "errorPrefix": "Something went wrong:",
+      "privacyText": "By submitting this form you agree to our",
+      "privacyLink": "Privacy Policy",
       "inquiryTypes": {
         "GENERAL": "General Inquiry",
         "ENROLLMENT": "Enrollment",
@@ -236,5 +239,14 @@
     "map": {
       "heading": "How to find us"
     }
+  },
+  "cookieNotice": {
+    "text": "This site uses essential cookies for session management and language preference.",
+    "learnMore": "Learn more",
+    "dismiss": "OK"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "How we collect, use, and protect your personal data."
   }
 }

@@ -9,9 +9,10 @@ async function main() {
   console.log("🌱 Seeding Smiley School database...");
 
   // ── Admin user ──────────────────────────────────────────────────
-  const seedPassword = process.env.SEED_ADMIN_PASSWORD ?? "ChangeMe!_NotThis";
-  if (seedPassword === "ChangeMe!_NotThis") {
-    console.warn("⚠️  Using default seed password — set SEED_ADMIN_PASSWORD in .env");
+  const seedPassword = process.env.SEED_ADMIN_PASSWORD;
+  if (!seedPassword) {
+    console.error("❌  SEED_ADMIN_PASSWORD env var is required. Set it before running the seed.");
+    process.exit(1);
   }
   const passwordHash = await bcrypt.hash(seedPassword, 12);
   await db.user.upsert({

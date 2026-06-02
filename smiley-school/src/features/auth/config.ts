@@ -6,6 +6,10 @@ import { z } from "zod";
 import { loginRateLimiter, getIpFromRequest } from "@/lib/rate-limit";
 import { authConfig } from "./auth.config";
 
+// Pre-computed sentinel — bcrypt.compare() always runs even when user is not found,
+// preventing timing-based email enumeration. This hash can never match real input.
+const DUMMY_HASH = "$2a$12$invalidhashpaddingthatcannotevermatchwithanypassword___";
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string()
@@ -38,10 +42,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         const user = await db.user.findUnique({ where: { email } });
-        if (!user) return null;
-
-        const isValid = await bcrypt.compare(password, user.passwordHash);
-        if (!isValid) return null;
+        const isValid = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+        if (!user || !isValid) return null;
 
         return {
           id: user.id,
