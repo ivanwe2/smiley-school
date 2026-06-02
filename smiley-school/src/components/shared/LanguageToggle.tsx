@@ -23,25 +23,25 @@ export function LanguageToggle({ currentLocale }: { currentLocale: string }) {
         onClick={() => switchTo("bg")}
         disabled={pending}
         className={cn(
-          "px-2.5 py-1 rounded-md text-xs font-semibold transition-all",
+          "px-3 py-1 rounded-md text-xs font-semibold transition-all",
           currentLocale === "bg"
             ? "bg-background text-[var(--navy-deep)] shadow-sm"
             : "text-[var(--text-muted)] hover:text-[var(--navy-deep)]"
         )}
       >
-        БГ
+        🇧🇬 БГ
       </button>
       <button
         onClick={() => switchTo("en")}
         disabled={pending}
         className={cn(
-          "px-2.5 py-1 rounded-md text-xs font-semibold transition-all",
+          "px-3 py-1 rounded-md text-xs font-semibold transition-all",
           currentLocale === "en"
             ? "bg-background text-[var(--navy-deep)] shadow-sm"
             : "text-[var(--text-muted)] hover:text-[var(--navy-deep)]"
         )}
       >
-        EN
+        🇬🇧 EN
       </button>
     </div>
   );
