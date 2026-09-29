@@ -1,58 +1,53 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { addDays, format, isThisWeek } from "date-fns";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { addDaysIso, weekStartIso } from "../lib/dates";
+import { formatDateRange } from "../lib/format";
 
-export function WeekNavigator({ weekStart }: { weekStart: Date }) {
-  const router = useRouter();
+type WeekNavigatorProps = {
+  /** Monday, "YYYY-MM-DD" */
+  weekStart: string;
+  /** "YYYY-MM-DD" in the school's time zone */
+  today: string;
+  /** page to navigate within, e.g. "/schedule" */
+  basePath: string;
+};
+
+const arrowClass =
+  "p-2.5 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--navy-light)] transition-colors active:scale-95";
+
+export function WeekNavigator({ weekStart, today, basePath }: WeekNavigatorProps) {
   const t = useTranslations("schedule");
-  const weekEnd = addDays(weekStart, 6);
-  const isCurrentWeek = isThisWeek(weekStart, { weekStartsOn: 1 });
-
-  function navigate(delta: number) {
-    const next = addDays(weekStart, delta * 7);
-    const iso = format(next, "yyyy-MM-dd");
-    router.push(`/schedule?week=${iso}`);
-  }
+  const locale = useLocale();
+  const isCurrentWeek = weekStart === weekStartIso(today);
+  const weekHref = (days: number) => `${basePath}?week=${addDaysIso(weekStart, days)}`;
 
   return (
-    <div className="flex items-center gap-2 sm:gap-4">
-      <button
-        onClick={() => navigate(-1)}
-        aria-label={t("prevWeek")}
-        className="p-2.5 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--navy-light)] transition-colors active:scale-95"
-      >
+    <nav className="flex items-center gap-2 sm:gap-4">
+      <Link href={weekHref(-7)} scroll={false} aria-label={t("prevWeek")} className={arrowClass}>
         <ChevronLeft size={18} />
-      </button>
+      </Link>
 
-      <div className="text-center flex-1 min-w-0">
-        <p className="font-semibold text-sm sm:text-base text-[var(--navy-deep)] truncate">
-          {format(weekStart, "MMM d")} – {format(weekEnd, "MMM d, yyyy")}
+      <div className="min-w-0 flex-1 text-center">
+        <p className="truncate text-sm font-semibold text-[var(--navy-deep)] sm:text-base">
+          {formatDateRange(weekStart, addDaysIso(weekStart, 5), locale)}
         </p>
-        {isCurrentWeek && (
-          <span className="text-xs text-[var(--yellow-deep)] font-semibold">{t("currentWeek")}</span>
-        )}
-      </div>
-
-      <div className="flex gap-1.5">
-        {!isCurrentWeek && (
-          <button
-            onClick={() => router.push("/schedule")}
-            className="hidden sm:block px-3 py-2 text-xs font-semibold rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--navy-light)] transition-colors"
+        {isCurrentWeek ? (
+          <span className="text-xs font-semibold text-[var(--yellow-deep)]">{t("currentWeek")}</span>
+        ) : (
+          <Link
+            href={basePath}
+            scroll={false}
+            className="text-xs font-semibold text-[var(--navy-mid)] underline underline-offset-2"
           >
             {t("today")}
-          </button>
+          </Link>
         )}
-        <button
-          onClick={() => navigate(1)}
-          aria-label={t("nextWeek")}
-          className="p-2.5 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--navy-light)] transition-colors active:scale-95"
-        >
-          <ChevronRight size={18} />
-        </button>
       </div>
-    </div>
+
+      <Link href={weekHref(7)} scroll={false} aria-label={t("nextWeek")} className={arrowClass}>
+        <ChevronRight size={18} />
+      </Link>
+    </nav>
   );
 }
