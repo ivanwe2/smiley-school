@@ -1,118 +1,275 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { classSchema, classOverrideSchema } from "@/lib/validations/schedule.schema";
+import {
+  cancelLessonSchema,
+  lessonNoteSchema,
+  lessonOccurrenceSchema,
+  lessonSchema,
+  rescheduleLessonSchema,
+  teacherSchema,
+  type CancelLessonInput,
+  type LessonInput,
+  type LessonNoteInput,
+  type LessonOccurrenceInput,
+  type RescheduleLessonInput,
+  type TeacherInput,
+} from "@/lib/validations/schedule.schema";
+import { dateToIso, dayOfWeekIso, isoToDate } from "../lib/dates";
 import type { ActionResult } from "@/types";
 
-export async function createClass(formData: FormData): Promise<ActionResult<{ id: string }>> {
-  await requireAdmin();
-  try {
-    const raw = {
-      name: formData.get("name"),
-      level: formData.get("level") || undefined,
-      teacher: formData.get("teacher") || undefined,
-      room: formData.get("room") || undefined,
-      color: formData.get("color") || undefined,
-      dayOfWeek: Number(formData.get("dayOfWeek")),
-      startTime: formData.get("startTime"),
-      endTime: formData.get("endTime"),
-      isActive: true,
-    };
-    const parsed = classSchema.safeParse(raw);
-    if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid data" };
+// Error strings are keys under `adminSchedule.errors` in messages/*.json
 
-    const cls = await db.class.create({ data: parsed.data });
-    revalidatePath("/schedule");
-    revalidatePath("/admin/schedule");
+function revalidateSchedule() {
+  revalidatePath("/schedule");
+  revalidatePath("/admin/schedule");
+  revalidatePath("/admin");
+}
+
+function invalid(error: z.ZodError): { success: false; error: string } {
+  return { success: false, error: error.issues[0]?.message ?? "invalid" };
+}
+
+function failed(e: unknown): { success: false; error: string } {
+  console.error(e);
+  return { success: false, error: "saveFailed" };
+}
+
+const ok = { success: true, data: undefined } as const;
+
+function toClassData(input: LessonInput) {
+  const once = input.repeat === "once" && input.date !== null;
+  return {
+    name: input.name,
+    teacherId: input.teacherId,
+    dayOfWeek: once && input.date ? dayOfWeekIso(input.date) : input.dayOfWeek,
+    date: once && input.date ? isoToDate(input.date) : null,
+    startTime: input.startTime,
+    endTime: input.endTime,
+  };
+}
+
+/** The lesson, if it really takes place on `date` (its original slot). */
+async function findOccurrence(classId: string, date: string) {
+  const cls = await db.class.findUnique({
+    where: { id: classId },
+    select: { dayOfWeek: true, date: true, startTime: true, endTime: true },
+  });
+  if (!cls) return null;
+  const takesPlace = cls.date ? dateToIso(cls.date) === date : cls.dayOfWeek === dayOfWeekIso(date);
+  return takesPlace ? cls : null;
+}
+
+// ─── Lessons (every week / one-time) ─────────────────────────────────────────
+
+export async function createLesson(input: LessonInput): Promise<ActionResult<{ id: string }>> {
+  await requireAdmin();
+  const parsed = lessonSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+
+  try {
+    const cls = await db.class.create({ data: toClassData(parsed.data), select: { id: true } });
+    revalidateSchedule();
     return { success: true, data: { id: cls.id } };
   } catch (e) {
-    console.error(e);
-    return { success: false, error: "Failed to create class." };
+    return failed(e);
   }
 }
 
-export async function updateClass(id: string, formData: FormData): Promise<ActionResult<void>> {
+export async function updateLesson(id: string, input: LessonInput): Promise<ActionResult> {
   await requireAdmin();
-  try {
-    const raw = {
-      name: formData.get("name"),
-      level: formData.get("level") || undefined,
-      teacher: formData.get("teacher") || undefined,
-      room: formData.get("room") || undefined,
-      color: formData.get("color") || undefined,
-      dayOfWeek: Number(formData.get("dayOfWeek")),
-      startTime: formData.get("startTime"),
-      endTime: formData.get("endTime"),
-      isActive: formData.get("isActive") !== "false",
-    };
-    const parsed = classSchema.safeParse(raw);
-    if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid data" };
+  const parsed = lessonSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
 
-    await db.class.update({ where: { id }, data: parsed.data });
-    revalidatePath("/schedule");
-    revalidatePath("/admin/schedule");
-    return { success: true, data: undefined };
+  try {
+    const existing = await db.class.findUnique({ where: { id }, select: { dayOfWeek: true, date: true } });
+    if (!existing) return { success: false, error: "lessonNotFound" };
+
+    const data = toClassData(parsed.data);
+    // Per-week changes are tied to the old dates; drop them if the lesson moves
+    const slotChanged =
+      existing.dayOfWeek !== data.dayOfWeek ||
+      (existing.date && dateToIso(existing.date)) !== (data.date && dateToIso(data.date));
+
+    await db.$transaction([
+      ...(slotChanged ? [db.classOverride.deleteMany({ where: { classId: id } })] : []),
+      db.class.update({ where: { id }, data }),
+    ]);
+    revalidateSchedule();
+    return ok;
   } catch (e) {
-    console.error(e);
-    return { success: false, error: "Failed to update class." };
+    return failed(e);
   }
 }
 
-export async function deleteClass(id: string): Promise<ActionResult<void>> {
+export async function deleteLesson(id: string): Promise<ActionResult> {
   await requireAdmin();
   try {
-    await db.class.update({ where: { id }, data: { isActive: false } });
-    revalidatePath("/schedule");
-    revalidatePath("/admin/schedule");
-    return { success: true, data: undefined };
+    await db.class.deleteMany({ where: { id } });
+    revalidateSchedule();
+    return ok;
   } catch (e) {
-    console.error(e);
-    return { success: false, error: "Failed to delete class." };
+    return failed(e);
   }
 }
 
-export async function upsertClassOverride(formData: FormData): Promise<ActionResult<void>> {
-  await requireAdmin();
-  try {
-    const raw = {
-      classId: formData.get("classId"),
-      date: formData.get("date"),
-      type: formData.get("type"),
-      overrideStartTime: formData.get("overrideStartTime") || undefined,
-      overrideEndTime: formData.get("overrideEndTime") || undefined,
-      overrideRoom: formData.get("overrideRoom") || undefined,
-      note: formData.get("note") || undefined,
-    };
-    const parsed = classOverrideSchema.safeParse(raw);
-    if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid data" };
+// ─── This week only ──────────────────────────────────────────────────────────
 
-    const { classId, date, ...rest } = parsed.data;
+export async function cancelLesson(input: CancelLessonInput): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = cancelLessonSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { classId, date, note } = parsed.data;
+
+  try {
+    if (!(await findOccurrence(classId, date))) return { success: false, error: "notOccurrence" };
+
+    const change = {
+      type: "CANCELLED" as const,
+      note: note || null,
+      newDate: null,
+      overrideStartTime: null,
+      overrideEndTime: null,
+    };
     await db.classOverride.upsert({
-      where: { classId_date: { classId, date } },
-      update: rest,
-      create: { classId, date, ...rest },
+      where: { classId_date: { classId, date: isoToDate(date) } },
+      create: { classId, date: isoToDate(date), ...change },
+      update: change,
     });
-
-    revalidatePath("/schedule");
-    revalidatePath("/admin/schedule");
-    return { success: true, data: undefined };
+    revalidateSchedule();
+    return ok;
   } catch (e) {
-    console.error(e);
-    return { success: false, error: "Failed to save override." };
+    return failed(e);
   }
 }
 
-export async function deleteClassOverride(classId: string, date: Date): Promise<ActionResult<void>> {
+export async function rescheduleLesson(input: RescheduleLessonInput): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = rescheduleLessonSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { classId, date, newDate, startTime, endTime, note } = parsed.data;
+
+  try {
+    const cls = await findOccurrence(classId, date);
+    if (!cls) return { success: false, error: "notOccurrence" };
+
+    const where = { classId_date: { classId, date: isoToDate(date) } };
+    const backToUsual = newDate === date && startTime === cls.startTime && endTime === cls.endTime;
+
+    if (backToUsual) {
+      // Nothing left to change — keep only the note, if there is one
+      if (note) {
+        const change = { type: "NOTE_ONLY" as const, note, newDate: null, overrideStartTime: null, overrideEndTime: null };
+        await db.classOverride.upsert({ where, create: { classId, date: isoToDate(date), ...change }, update: change });
+      } else {
+        await db.classOverride.deleteMany({ where: { classId, date: isoToDate(date) } });
+      }
+    } else {
+      const change = {
+        type: "RESCHEDULED" as const,
+        note: note || null,
+        newDate: newDate === date ? null : isoToDate(newDate),
+        overrideStartTime: startTime,
+        overrideEndTime: endTime,
+      };
+      await db.classOverride.upsert({ where, create: { classId, date: isoToDate(date), ...change }, update: change });
+    }
+    revalidateSchedule();
+    return ok;
+  } catch (e) {
+    return failed(e);
+  }
+}
+
+export async function setLessonNote(input: LessonNoteInput): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = lessonNoteSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  const { classId, date, note } = parsed.data;
+
+  try {
+    if (!(await findOccurrence(classId, date))) return { success: false, error: "notOccurrence" };
+
+    const day = isoToDate(date);
+    if (note) {
+      await db.classOverride.upsert({
+        where: { classId_date: { classId, date: day } },
+        create: { classId, date: day, type: "NOTE_ONLY", note },
+        update: { note },
+      });
+    } else {
+      // Removing the note: a note-only change disappears, others just lose the note
+      await db.$transaction([
+        db.classOverride.deleteMany({ where: { classId, date: day, type: "NOTE_ONLY" } }),
+        db.classOverride.updateMany({ where: { classId, date: day }, data: { note: null } }),
+      ]);
+    }
+    revalidateSchedule();
+    return ok;
+  } catch (e) {
+    return failed(e);
+  }
+}
+
+/** Undo this week's change: the lesson runs as usual again. */
+export async function restoreLesson(input: LessonOccurrenceInput): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = lessonOccurrenceSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+
+  try {
+    await db.classOverride.deleteMany({
+      where: { classId: parsed.data.classId, date: isoToDate(parsed.data.date) },
+    });
+    revalidateSchedule();
+    return ok;
+  } catch (e) {
+    return failed(e);
+  }
+}
+
+// ─── Teachers ────────────────────────────────────────────────────────────────
+
+export async function createTeacher(input: TeacherInput): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = teacherSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+
+  try {
+    const last = await db.teacher.aggregate({ _max: { order: true } });
+    await db.teacher.create({ data: { ...parsed.data, order: (last._max.order ?? -1) + 1 } });
+    revalidateSchedule();
+    return ok;
+  } catch (e) {
+    return failed(e);
+  }
+}
+
+export async function updateTeacher(id: string, input: TeacherInput): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = teacherSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+
+  try {
+    await db.teacher.update({ where: { id }, data: parsed.data });
+    revalidateSchedule();
+    return ok;
+  } catch (e) {
+    return failed(e);
+  }
+}
+
+/** Lessons of a deleted teacher stay on the timetable, without a teacher. */
+export async function deleteTeacher(id: string): Promise<ActionResult> {
   await requireAdmin();
   try {
-    await db.classOverride.delete({ where: { classId_date: { classId, date } } });
-    revalidatePath("/schedule");
-    revalidatePath("/admin/schedule");
-    return { success: true, data: undefined };
+    await db.teacher.deleteMany({ where: { id } });
+    revalidateSchedule();
+    return ok;
   } catch (e) {
-    console.error(e);
-    return { success: false, error: "Failed to remove override." };
+    return failed(e);
   }
 }
