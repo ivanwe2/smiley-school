@@ -3,6 +3,10 @@ import { db } from "@/lib/db";
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://smileyschool.com";
 
+// Built per request: it lists posts and albums from the database, which isn't
+// reachable while the Docker image is built.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE, priority: 1.0, changeFrequency: "weekly", lastModified: new Date() },
