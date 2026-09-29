@@ -22,6 +22,25 @@ services:
       retries: 10
     # Do NOT expose port 5432 in production
 
+  # Applies database migrations, then exits; `web` starts once it succeeds.
+  # Built from the Dockerfile's builder stage, which has the Prisma CLI, the
+  # schema and the migrations (the slim runner image has none of them).
+  # Also runs one-off scripts, e.g.:
+  #   docker compose -f docker-compose.prod.yml run --rm migrate npm run db:seed-schedule
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DIRECT_URL: ${DIRECT_URL}
+    command: npx prisma migrate deploy
+
   web:
     build:
       context: .
@@ -30,6 +49,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "3000:3000"
     environment:
@@ -38,6 +59,8 @@ services:
       DIRECT_URL: ${DIRECT_URL}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
+      # Outside Vercel, Auth.js rejects every request (admin login fails) unless the host is trusted
+      AUTH_TRUST_HOST: "true"
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
@@ -46,8 +69,6 @@ services:
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
       RESEND_API_KEY: ${RESEND_API_KEY}
-    command: >
-      sh -c "npx prisma migrate deploy && node server.js"
 
   nginx:
     image: nginx:alpine
