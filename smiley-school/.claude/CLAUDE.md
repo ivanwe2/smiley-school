@@ -65,8 +65,9 @@ Primary stack: Next.js 16 (App Router) · TypeScript (strict) · Tailwind CSS v4
 ## Design System Quick Reference
 - **Brand yellow**: `var(--yellow-primary)` (#F4B942)
 - **Navy deep**: `var(--navy-deep)` (#0F1F3D) — headings, navbar
-- **Font headings**: Fraunces — CSS var `--font-fraunces`
-- **Font body**: Plus Jakarta Sans — CSS var `--font-jakarta`
+- **Font headings**: Literata — CSS var `--font-literata`; use the `font-fraunces` class (legacy name) or `font-heading`
+- **Font body**: Onest — CSS var `--font-onest` (default `font-sans`)
+- Fonts must include Cyrillic (the site defaults to Bulgarian): load them with `subsets: ["latin", "cyrillic"]`, and check them with `lang="bg"` — some fonts (e.g. Manrope, Montserrat) switch to Bulgarian-style letterforms there
 - **Border radius**: `rounded-xl` (12px) for cards, `rounded-lg` (8px) for inputs/buttons
 
 ## Important File Locations
