@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import { Literata, Onest } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getLocale } from "next-intl/server";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
+// Both fonts include Cyrillic, so Bulgarian and English pages look the same
+const literata = Literata({
+  variable: "--font-literata",
+  subsets: ["latin", "cyrillic"],
   display: "swap",
-  axes: ["SOFT", "WONK", "opsz"],
+  axes: ["opsz"],
 });
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
-  subsets: ["latin"],
+const onest = Onest({
+  variable: "--font-onest",
+  subsets: ["latin", "cyrillic"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://smileyschool.com";
@@ -63,7 +63,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${fraunces.variable} ${plusJakartaSans.variable} h-full`}
+      className={`${literata.variable} ${onest.variable} h-full`}
     >
       <body className="min-h-full flex flex-col antialiased bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
