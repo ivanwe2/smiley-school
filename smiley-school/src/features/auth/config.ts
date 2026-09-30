@@ -10,12 +10,12 @@ import { authConfig } from "./auth.config";
 // preventing timing-based email enumeration. This hash can never match real input.
 const DUMMY_HASH = "$2a$12$invalidhashpaddingthatcannotevermatchwithanypassword___";
 
+// Login only checks the password against its hash. The strength policy
+// (password.schema.ts) applies when a password is set, so existing accounts
+// with older passwords can still sign in.
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[\d\W_]/, "Password must contain at least one number or special character"),
+  password: z.string().min(1).max(200),
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
