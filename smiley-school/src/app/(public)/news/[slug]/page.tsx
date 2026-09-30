@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { getPostBySlug, getPublishedPosts } from "@/features/blog/queries/posts.queries";
 import { formatDate } from "@/lib/utils";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { ArrowLeft } from "lucide-react";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -81,7 +82,7 @@ export default async function PostPage({ params }: Props) {
           {/* Content */}
           <div
             className="prose prose-lg max-w-none text-[var(--text-body)] leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
           />
 
           {/* Share */}

@@ -1,10 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { contactSchema } from "@/lib/validations/contact.schema";
 import { sendContactNotification, sendContactConfirmation, resend } from "@/lib/email";
 import { requireAdmin } from "@/lib/auth";
+import { escapeHtml, escapeHtmlWithBreaks } from "@/lib/html-escape";
+import { contactRateLimiter } from "@/lib/rate-limit";
 import type { ActionResult } from "@/types";
 
 const FROM = process.env.CONTACT_EMAIL_FROM ?? "noreply@smileyschool.com";
@@ -13,6 +16,18 @@ export async function submitContactForm(
   formData: FormData
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    // Rate limiting per IP
+    const h = await headers();
+    const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      h.get("x-real-ip")?.trim() ?? "unknown";
+
+    const rateLimitKey = `contact:${ip}`;
+    const { success: withinLimit } = contactRateLimiter.test(rateLimitKey);
+
+    if (!withinLimit) {
+      return { success: false, error: "Too many submissions. Please try again later." };
+    }
+
     const raw = {
       name: formData.get("name"),
       email: formData.get("email"),
@@ -30,7 +45,7 @@ export async function submitContactForm(
 
     const data = parsed.data;
 
-    // Save to DB
+    // Save to DB (with IP address for audit trail)
     const submission = await db.contactSubmission.create({
       data: {
         name: data.name,
@@ -39,6 +54,7 @@ export async function submitContactForm(
         subject: data.subject || null,
         message: data.message,
         inquiryType: data.inquiryType as "GENERAL" | "ENROLLMENT" | "SCHEDULE" | "CAMBRIDGE_EXAM" | "PRICING",
+        ipAddress: ip,
       },
     });
 
@@ -71,8 +87,8 @@ export async function replyToContact(id: string, message: string): Promise<Actio
       subject: `Re: ${submission.subject ?? "Your enquiry"} — Smiley School`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px;">
-          <p>Dear ${submission.name},</p>
-          <div style="padding: 16px; background: #f5f5f5; border-radius: 8px; margin: 16px 0; white-space: pre-wrap;">${message.replace(/\n/g, "<br>")}</div>
+          <p>Dear ${escapeHtml(submission.name)},</p>
+          <div style="padding: 16px; background: #f5f5f5; border-radius: 8px; margin: 16px 0; white-space: pre-wrap;">${escapeHtmlWithBreaks(message)}</div>
           <p style="color:#1E3A5F; font-weight:bold;">Smiley School Team</p>
           <p style="color:#888; font-size:12px;">Cambridge-Certified English Language Center</p>
         </div>

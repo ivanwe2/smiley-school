@@ -10,7 +10,12 @@ async function main() {
   console.log("🌱 Seeding Smiley School database...");
 
   // ── Admin user ──────────────────────────────────────────────────
-  const passwordHash = await bcrypt.hash("admin1234", 12);
+  const seedPassword = process.env.SEED_ADMIN_PASSWORD;
+  if (!seedPassword) {
+    console.error("❌  SEED_ADMIN_PASSWORD env var is required. Set it before running the seed.");
+    process.exit(1);
+  }
+  const passwordHash = await bcrypt.hash(seedPassword, 12);
   await db.user.upsert({
     where: { email: "admin@smileyschool.com" },
     update: {},
@@ -18,10 +23,10 @@ async function main() {
       email: "admin@smileyschool.com",
       passwordHash,
       name: "School Admin",
-      role: "ADMIN",
+      role: "SUPER_ADMIN",
     },
   });
-  console.log("✅ Admin user created (admin@smileyschool.com / admin1234)");
+  console.log(`✅ Admin user created (admin@smileyschool.com — password from SEED_ADMIN_PASSWORD)`);
 
   // ── Weekly schedule ─────────────────────────────────────────────
   if ((await db.class.count()) === 0) {

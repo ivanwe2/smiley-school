@@ -2,6 +2,7 @@ import { getLocale } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/shared/PageTransition";
+import { CookieNotice } from "@/components/shared/CookieNotice";
 import { SCHOOL } from "@/lib/constants";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://smileyschool.com";
@@ -48,6 +49,7 @@ export default async function PublicLayout({
         <PageTransition>{children}</PageTransition>
       </main>
       <Footer />
+      <CookieNotice />
     </>
   );
 }

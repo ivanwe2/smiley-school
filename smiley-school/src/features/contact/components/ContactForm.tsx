@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { submitContactForm } from "@/features/contact/actions/contact.actions";
 import { cn } from "@/lib/utils";
 
@@ -104,6 +105,14 @@ export function ContactForm() {
       >
         {pending ? t("sending") : t("submit")}
       </button>
+
+      <p className="text-xs text-[var(--text-muted)] text-center">
+        {t("privacyText")}{" "}
+        <Link href="/privacy" className="underline hover:text-[var(--navy-deep)] transition-colors">
+          {t("privacyLink")}
+        </Link>
+        .
+      </p>
     </form>
   );
 }

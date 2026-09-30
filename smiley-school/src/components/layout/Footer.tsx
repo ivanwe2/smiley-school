@@ -148,7 +148,12 @@ export async function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-[var(--navy-mid)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[var(--navy-light)]/60">
-          <p>© {year} {SCHOOL.name}. {tFooter("copyright")}</p>
+          <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+            <p>© {year} {SCHOOL.name}. {tFooter("copyright")}</p>
+            <Link href="/privacy" className="hover:text-[var(--yellow-primary)] transition-colors">
+              {tFooter("privacyPolicy")}
+            </Link>
+          </div>
           <p>{tFooter("cambridgeCertified")}</p>
         </div>
       </div>

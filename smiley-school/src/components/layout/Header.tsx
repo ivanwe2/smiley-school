@@ -26,8 +26,8 @@ export function Header({ locale }: { locale: string }) {
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-200",
         scrolled
-          ? "bg-white/95 backdrop-blur-sm shadow-sm border-b border-[var(--border)]"
-          : "bg-white border-b border-[var(--border)]"
+          ? "bg-background/95 backdrop-blur-sm shadow-sm border-b border-[var(--border)]"
+          : "bg-background border-b border-[var(--border)]"
       )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
