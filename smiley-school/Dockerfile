@@ -16,7 +16,7 @@ COPY . .
 
 # Generate Prisma client, then build
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npx prisma generate && next build
+RUN npx prisma generate && npx next build
 
 # ─── Stage 3: runner ─────────────────────────────────────────────────────────
 FROM node:22-alpine AS runner

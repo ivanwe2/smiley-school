@@ -30,35 +30,50 @@ enum Role {
 
 // ─── Schedule ──────────────────────────────────────────────────────
 
-/// A recurring weekly class (e.g. "Cambridge B2 First — Monday 18:00")
+/// A teacher. Lessons on the timetable are colour-coded by teacher.
+model Teacher {
+  id        String   @id @default(cuid())
+  name      String
+  color     String /// palette key from TEACHER_COLORS, e.g. "green"
+  order     Int      @default(0) /// position in the timetable legend
+  createdAt DateTime @default(now())
+  classes   Class[]
+
+  @@map("teachers")
+}
+
+/// A lesson on the timetable (e.g. "6 клас — Monday 14:20–16:20").
+/// Repeats every week on `dayOfWeek`, unless `date` is set — then it is a
+/// one-time lesson on that date only.
 model Class {
   id        String          @id @default(cuid())
-  name      String
-  level     String?
-  teacher   String?
-  room      String?
-  color     String?
+  name      String /// group or student, e.g. "6 клас", "Диана"
+  teacherId String?
+  teacher   Teacher?        @relation(fields: [teacherId], references: [id], onDelete: SetNull)
   dayOfWeek Int /// 0=Sun 1=Mon … 6=Sat
   startTime String /// "18:00"
   endTime   String /// "20:00"
-  isActive  Boolean         @default(true)
+  date      DateTime?       @db.Date /// set → one-time lesson on this date
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
   overrides ClassOverride[]
 
+  @@index([date])
   @@map("classes")
 }
 
-/// Per-date overrides: cancellations, reschedules, notes
+/// Changes to a single occurrence of a lesson: cancellation, a new time
+/// and/or day within the same week, or a note. `date` is the occurrence's
+/// original date.
 model ClassOverride {
   id                String       @id @default(cuid())
   classId           String
   class             Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
   date              DateTime     @db.Date
   type              OverrideType
+  newDate           DateTime?    @db.Date /// RESCHEDULED: the day it moved to
   overrideStartTime String?
   overrideEndTime   String?
-  overrideRoom      String?
   note              String?
   createdAt         DateTime     @default(now())
 

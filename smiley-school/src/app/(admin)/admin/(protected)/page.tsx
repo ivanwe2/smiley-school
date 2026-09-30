@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
-import { startOfWeek, addDays } from "date-fns";
+import { addDaysIso, isoToDate, resolveWeekStart } from "@/features/schedule/lib/dates";
 import {
   CalendarDays,
   FileText,
@@ -15,8 +15,9 @@ import {
 export const metadata: Metadata = { title: "Dashboard" };
 
 async function getDashboardStats() {
-  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
-  const weekEnd = addDays(weekStart, 6);
+  const thisWeek = resolveWeekStart(undefined);
+  const weekStart = isoToDate(thisWeek);
+  const weekEnd = isoToDate(addDaysIso(thisWeek, 6));
 
   const [
     totalClasses,
@@ -27,7 +28,7 @@ async function getDashboardStats() {
     recentContacts,
     thisWeekOverrides,
   ] = await Promise.all([
-    db.class.count({ where: { isActive: true } }),
+    db.class.count({ where: { date: null } }), // weekly lessons
     db.post.count({ where: { published: true } }),
     db.post.count({ where: { published: false } }),
     db.galleryAlbum.count({ where: { published: true } }),

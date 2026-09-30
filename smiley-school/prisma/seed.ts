@@ -1,6 +1,7 @@
 import { PrismaClient } from "../src/generated/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
+import { LESSONS, seedSchedule } from "./schedule-data";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! }); // seed only runs in controlled CLI context
 const db = new PrismaClient({ adapter });
@@ -27,94 +28,13 @@ async function main() {
   });
   console.log(`✅ Admin user created (admin@smileyschool.com — password from SEED_ADMIN_PASSWORD)`);
 
-  // ── Sample classes ──────────────────────────────────────────────
-  const classes = [
-    {
-      name: "Cambridge B2 First",
-      level: "B2",
-      teacher: "Ms. Elena",
-      room: "Room 1",
-      color: "#0F1F3D",
-      dayOfWeek: 1, // Monday
-      startTime: "18:00",
-      endTime: "20:00",
-    },
-    {
-      name: "Cambridge C1 Advanced",
-      level: "C1",
-      teacher: "Mr. Dimitris",
-      room: "Room 2",
-      color: "#1E3A5F",
-      dayOfWeek: 2, // Tuesday
-      startTime: "18:00",
-      endTime: "20:00",
-    },
-    {
-      name: "Cambridge B1 Preliminary",
-      level: "B1",
-      teacher: "Ms. Sofia",
-      room: "Room 3",
-      color: "#D97706",
-      dayOfWeek: 3, // Wednesday
-      startTime: "17:00",
-      endTime: "19:00",
-    },
-    {
-      name: "Cambridge A2 Key",
-      level: "A2",
-      teacher: "Ms. Maria",
-      room: "Room 1",
-      color: "#059669",
-      dayOfWeek: 4, // Thursday
-      startTime: "17:00",
-      endTime: "18:30",
-    },
-    {
-      name: "General English (Adults)",
-      level: null,
-      teacher: "Mr. Nikos",
-      room: "Room 2",
-      color: "#F4B942",
-      dayOfWeek: 5, // Friday
-      startTime: "10:00",
-      endTime: "12:00",
-    },
-    {
-      name: "Kids English",
-      level: null,
-      teacher: "Ms. Anna",
-      room: "Room 3",
-      color: "#F4B942",
-      dayOfWeek: 6, // Saturday
-      startTime: "10:00",
-      endTime: "11:30",
-    },
-    {
-      name: "Cambridge B2 First",
-      level: "B2",
-      teacher: "Ms. Elena",
-      room: "Room 1",
-      color: "#0F1F3D",
-      dayOfWeek: 3, // Wednesday
-      startTime: "18:00",
-      endTime: "20:00",
-    },
-    {
-      name: "Cambridge C1 Advanced",
-      level: "C1",
-      teacher: "Mr. Dimitris",
-      room: "Room 2",
-      color: "#1E3A5F",
-      dayOfWeek: 4, // Thursday
-      startTime: "18:30",
-      endTime: "20:30",
-    },
-  ];
-
-  for (const cls of classes) {
-    await db.class.create({ data: cls });
+  // ── Weekly schedule ─────────────────────────────────────────────
+  if ((await db.class.count()) === 0) {
+    await seedSchedule(db);
+    console.log(`✅ Weekly schedule created (${LESSONS.length} lessons)`);
+  } else {
+    console.log("↷ Schedule already has lessons — skipped");
   }
-  console.log(`✅ ${classes.length} classes created`);
 
   // ── Sample gallery album ─────────────────────────────────────────
   await db.galleryAlbum.create({
